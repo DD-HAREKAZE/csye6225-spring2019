@@ -10,10 +10,16 @@
 | | | |
 
 ## Technology Stack
-
+VMWare Workstation15 (provided by NEU software center)
+VM OS: Unbuntu 16.04
+IDE: IntelliJ IDEA
+Spring Boot
+Postman
+Datebase: MySQL
 
 ## Build Instructions
-
+Need IntelliJ to run this. For now I set MySQL just runs on my local mechine.
+You need to build a database which has the same properties shows in User.java.
 
 ## Deploy Instructions
 
