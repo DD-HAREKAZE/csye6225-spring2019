@@ -80,9 +80,11 @@ public class UserController {
             if(occupied==0){
                 User temp=new User();
                 temp.setName(username);
-                temp.setPassword(password);
+                String codepass =  BCrypt.hashpw(password, BCrypt.gensalt());
+                temp.setPassword(codepass);
+                temp.setRealpassword(password);
                 userRepository.save(temp);
-                result="Register success! Your username is: "+temp.getName()+" and your password is: "+temp.getpassword();
+                result="Register success! Your username is: "+temp.getName()+" and your password is: "+temp.getRealpassword();
             }
 
             return result;

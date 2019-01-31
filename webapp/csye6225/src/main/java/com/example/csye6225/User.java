@@ -14,6 +14,7 @@ public class User {
     private int ID;
     private String name;
     private String password;
+    private String realpassword;
 
     public User(){  }
 
@@ -36,5 +37,10 @@ public class User {
     public void setaddress(String password) {
         this.password = password;
     }
-
+    public String getRealpassword() {
+        return realpassword;
+    }
+    public void setRealpassword(String realpassword) {
+        this.realpassword = realpassword;
+    }
 }
