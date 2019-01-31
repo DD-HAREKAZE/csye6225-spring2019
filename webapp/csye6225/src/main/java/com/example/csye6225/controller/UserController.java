@@ -89,10 +89,51 @@ public class UserController {
             //0 means OK
             //1 means occupied
             //2 means username is not a email address
+            //3 means password is not strong enough
+
+            //username=email? check
             if(isEmail(username)==false){
                 String p="Error: username must be an email address!";
                 return p;
             }
+
+            //password strong? check
+            if(password.length()<=8){
+                return "The length of password should be over 8.";
+            }
+            String reg = "[A-Z]";
+            Pattern pattern = Pattern.compile(reg);
+            Matcher matcher = pattern.matcher(password);
+            int j=0;
+            while(matcher.find()){
+                j++;
+            }
+            if(j==0){
+                return "You need at least one upper case char in password.";
+            }
+
+            String reg2= "[a-z]";
+            Pattern pattern1 = Pattern.compile(reg2);
+            Matcher matcher1 = pattern1.matcher(password);
+            int k=0;
+            while(matcher1.find()){
+                k++;
+            }
+            if(k==0){
+                return "You need at least one lower case char in password.";
+            }
+
+            String reg3 = "[0-9]";
+            Pattern pattern2 = Pattern.compile(reg3);
+            Matcher matcher2 = pattern2.matcher(password);
+            int l=0;
+            while(matcher2.find()){
+                l++;
+            }
+            if(l==0){
+                return "You need at least one number in password.";
+            }
+
 
 
 
