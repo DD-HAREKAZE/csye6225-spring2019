@@ -13,6 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 
@@ -63,26 +65,53 @@ public class UserController {
             return s;
         }
 
+
+
+
+        //check if a username is an email address or not
+        public static boolean isEmail(String string) {
+            if (string == null) return false;
+            String regEx1 = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+            Pattern p;
+            Matcher m;
+            p = Pattern.compile(regEx1);
+            m = p.matcher(string);
+            if (m.matches()) return true;
+            else
+                return false;
+        }
+
         // register function
         @RequestMapping(value = "/user/register",method = RequestMethod.POST)
         public String RegisterNewUser(@RequestHeader String username,@RequestHeader String password){
             String result=" ";
-            int occupied=0;
+            int code=0;
+            //0 means OK
+            //1 means occupied
+            //2 means username is not a email address
+            if(isEmail(username)==false){
+                String p="Error: username must be an email address!";
+                return p;
+            }
+
+
+
             List<User> a=userRepository.findAll();
             for(User singleRecord:a){
-                if(singleRecord.getName().equals(username)){occupied=1;}
-
+                if(singleRecord.getName().equals(username)){code=1;}
             }
-            if(occupied==1){
+            if(code==1){
                 result="Sorry, this account already exists!";
                 return result;
             }
-            if(occupied==0){
+            if(code==0){
                 User temp=new User();
                 temp.setName(username);
-                temp.setPassword(password);
+                String codepass =  BCrypt.hashpw(password, BCrypt.gensalt());
+                temp.setPassword(codepass);
+                temp.setRealpassword(password);
                 userRepository.save(temp);
-                result="Register success! Your username is: "+temp.getName()+" and your password is: "+temp.getpassword();
+                result="Register success! Your username is: "+temp.getName()+" and your password is: "+temp.getRealpassword();
             }
 
             return result;

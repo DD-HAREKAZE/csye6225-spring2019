@@ -10,7 +10,12 @@
 | | | |
 
 ## Technology Stack
-
+VMWare Workstation15 (provided by NEU software center)
+VM OS: Unbuntu 16.04
+IDE: IntelliJ IDEA
+Spring Boot
+Postman
+Datebase: MySQL
 
 ## Build Instructions
 
