@@ -47,7 +47,7 @@ public class UserController {
             for (User singleRecord:a
                  ) {
                 //System.out.println("Now identifying "+singleRecord.getName()+","+singleRecord.getpassword());
-                if((singleRecord.getName().equals(iusername))&&singleRecord.getpassword().equals(ipassword) ){
+                if((singleRecord.getName().equals(iusername))&&BCrypt.checkpw(ipassword,singleRecord.getpassword() )){
                     authorizeTag=100;
                     //output current time
                     Date now = new Date();
