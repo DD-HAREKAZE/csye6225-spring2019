@@ -9,4 +9,3 @@ aws ec2 associate-route-table  --subnet-id $subnet1 --route-table-id $routetable
 aws ec2 associate-route-table  --subnet-id $subnet2 --route-table-id $routetable
 aws ec2 associate-route-table  --subnet-id $subnet3 --route-table-id $routetable
 aws ec2 create-route --route-table-id $routetable --destination-cidr-block 0.0.0.0/0 --gateway-id $gateway
-
