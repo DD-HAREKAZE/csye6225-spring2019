@@ -10,8 +10,6 @@
 |Amrith Prabhu|001447099|prabhu.am@husky.neu.edu|
 
 
-
-
 ## Technology Stack
 VMWare Workstation15 (provided by NEU software center)
 VM OS: Unbuntu 16.04
