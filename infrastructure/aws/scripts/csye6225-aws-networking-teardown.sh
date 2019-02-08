@@ -22,3 +22,4 @@ read igwid
 aws ec2 detach-internet-gateway --internet-gateway-id $igwid --vpc-id $vpcid
 aws ec2 delete-internet-gateway --internet-gateway-id $igwid
 aws ec2 delete-vpc --vpc-id $vpcid
+#commit for Yifu
