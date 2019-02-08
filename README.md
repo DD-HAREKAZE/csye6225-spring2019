@@ -5,9 +5,10 @@
 | Name | NEU ID | Email Address |
 | --- | --- | --- |
 |Jiawei Zhao|001495711|zhao.jiawe@northeastern.edu|
-|Keke Yuan|001491111|yuan.ke@northeastern.edu|
+|Ke Yuan|001491111|yuan.ke@northeastern.edu|
 |Yifu Xu|001422663|xu.yifu@northeastern.edu|
-| | | |
+|Amrith Prabhu|001447099|prabhu.am@husky.neu.edu|
+
 
 ## Technology Stack
 VMWare Workstation15 (provided by NEU software center)
