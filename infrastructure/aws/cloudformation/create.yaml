@@ -358,4 +358,5 @@ Outputs:
     Description: Third Private Subnet
     Value: !Ref PrivateSubnetC
     Export:
-Name: !Sub ${AWS::StackName}-PrivateSubnetC
+      Name: !Sub ${AWS::StackName}-PrivateSubnetC
+

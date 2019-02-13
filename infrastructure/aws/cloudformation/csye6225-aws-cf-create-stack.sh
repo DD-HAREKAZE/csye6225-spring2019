@@ -1,1 +1,2 @@
-aws cloudformation create-stack --stack-name csye6225-vpc --template-body file://create.yaml
+aws cloudformation create-stack --stack-name csye6225-Vpc --template-body file://create.yaml
+
