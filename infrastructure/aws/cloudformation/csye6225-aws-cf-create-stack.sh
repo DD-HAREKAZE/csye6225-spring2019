@@ -1,2 +1,4 @@
-aws cloudformation create-stack --stack-name csye6225-Vpc --template-body file://create.yaml
-
+echo "Enter the stack name to create"
+read stackname
+echo $stackname
+aws cloudformation create-stack --stack-name $stackname --template-body file://create.yaml
