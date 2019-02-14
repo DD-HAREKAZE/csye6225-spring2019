@@ -1,6 +1,7 @@
 package com.example.csye6225.controller;
 
 
+import com.example.csye6225.Note;
 import com.example.csye6225.User;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,11 +21,15 @@ import java.util.regex.Pattern;
 public class UserController {
         @Autowired
         private UserRepository userRepository;
+        @Autowired
+        private NoteRepository noteRepository;
+
         //test function: show all users
         @RequestMapping("/getAllStudent")
         public List<User> getAllStudent(){
             return userRepository.findAll();
         }
+
 
 
 
@@ -180,6 +185,74 @@ public class UserController {
 
             return result;
         }
+
+
+
+
+
+        //function of assignment3: CRUD
+        @RequestMapping(value = "/Create",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
+        @ResponseBody
+        public String Create(@RequestHeader String username, @RequestHeader String password,
+                             @RequestHeader String noteTitle,@RequestHeader String content) throws JSONException {
+            List<User> a=userRepository.findAll();
+            String currentUser=null;
+            String result=null;
+            int match=0;
+            JSONObject jsonObject = new JSONObject();
+
+            for(User singleRecord:a){
+                if((singleRecord.getName().equals(username))&&BCrypt.checkpw(password,singleRecord.getpassword() )){
+                    match=1;//match a legal user, go on
+                    currentUser=singleRecord.getName();
+                    break;
+                }
+            }
+            //check if user-password is valid
+            if(match==0){
+                jsonObject.put("Error message:","Sorry, username and password are not valid!");
+                jsonObject.put("Status:","500");
+                String p=jsonObject.toString();
+                return p;
+            }
+            match=1;
+
+            if(noteTitle==null){
+                jsonObject.put("User:",currentUser);
+                jsonObject.put("Condition:","User log in success!");
+                jsonObject.put("Error message:","Note title can't be null.");
+                jsonObject.put("Status:","500");
+                String p=jsonObject.toString();
+                return p;
+            }
+
+            if(content==null){
+                jsonObject.put("User:",currentUser);
+                jsonObject.put("Condition:","User log in success!");
+                jsonObject.put("Error message:","Note content can't be null.");
+                jsonObject.put("Status:","500");
+                String p=jsonObject.toString();
+                return p;
+            }
+
+            if(match==1){
+                Note tempnote=new Note();
+                tempnote.setOwner_name(currentUser);
+                tempnote.setContent(content);
+                tempnote.setNote_title(noteTitle);
+                noteRepository.save(tempnote);
+                jsonObject.put("User:",currentUser);
+                jsonObject.put("Condition:","User log in success!");
+                jsonObject.put("Operation:","Create a new note");
+                jsonObject.put("Result:","Create success!");
+                jsonObject.put("New note title:",tempnote.getNote_title());
+                jsonObject.put("Status:","200");
+                result=jsonObject.toString();
+
+            }
+            return result;
+        }
+
 }
 
 
