@@ -1,12 +1,14 @@
 package com.example.csye6225.controller;
 
 
-import com.example.csye6225.Note;
 import com.example.csye6225.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -203,81 +205,6 @@ public class UserController {
 
             }
 
-            return result;
-        }
-
-
-
-
-
-        //function of assignment3: CRUD
-        @RequestMapping(value = "/Create",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
-        @ResponseBody
-        public String Create(HttpServletRequest request,
-                             HttpServletResponse response) throws JSONException {
-            List<User> a=userRepository.findAll();
-            String header= request.getHeader("Authorization");
-            String basicAuthEncoded = header.substring(6);
-            String basicAuthAsString = new String(Base64.getDecoder().decode(basicAuthEncoded.getBytes()));
-            final String[] credentialValues = basicAuthAsString.split(":", 2);
-            String username=credentialValues[0];
-            String password=credentialValues[1];
-            String currentUser=credentialValues[0];
-            String noteTitle=request.getHeader("noteTitle");
-            String content=request.getHeader("content");
-            String result=null;
-            int match=0;
-            JSONObject jsonObject = new JSONObject();
-
-            for(User singleRecord:a){
-                if((singleRecord.getName().equals(username))&& (singleRecord.getRealpassword().equals(password))){
-                    match=1;//match a legal user, go on
-                    currentUser=singleRecord.getName();
-                    break;
-                }
-            }
-            //check if user-password is valid
-            if(match==0){
-                jsonObject.put("Error message:","Sorry, username and password are not valid!");
-                jsonObject.put("Status:","500");
-                String p=jsonObject.toString();
-                return p;
-            }
-            match=1;
-
-            if(noteTitle==null){
-                jsonObject.put("User:",currentUser);
-                jsonObject.put("Condition:","User log in success!");
-                jsonObject.put("Error message:","Note title can't be null.");
-                jsonObject.put("Status:","500");
-                String p=jsonObject.toString();
-                return p;
-            }
-
-            if(content==null){
-                jsonObject.put("User:",currentUser);
-                jsonObject.put("Condition:","User log in success!");
-                jsonObject.put("Error message:","Note content can't be null.");
-                jsonObject.put("Status:","500");
-                String p=jsonObject.toString();
-                return p;
-            }
-
-            if(match==1){
-                Note tempnote=new Note();
-                tempnote.setOwner_name(currentUser);
-                tempnote.setContent(content);
-                tempnote.setNote_title(noteTitle);
-                noteRepository.save(tempnote);
-                jsonObject.put("User:",currentUser);
-                jsonObject.put("Condition:","User log in success!");
-                jsonObject.put("Operation:","Create a new note");
-                jsonObject.put("Result:","Create success!");
-                jsonObject.put("New note title:",tempnote.getNote_title());
-                jsonObject.put("Status:","200");
-                result=jsonObject.toString();
-
-            }
             return result;
         }
 
