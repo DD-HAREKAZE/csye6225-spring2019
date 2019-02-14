@@ -1,14 +1,19 @@
 package com.example.csye6225.controller;
 
 
-import com.example.csye6225.Note;
 import com.example.csye6225.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -37,18 +42,24 @@ public class UserController {
         //redo: add basic auth
         @RequestMapping(value = "/",method = RequestMethod.GET,produces = "application/json;charset=UTF-8")
         @ResponseBody
-        public String getTime(@RequestHeader String username, @RequestHeader String password) throws JSONException {
+        public String getTime(HttpServletRequest request, HttpServletResponse response) throws JSONException {
             String s=" ";
             JSONObject jsonObject = new JSONObject();
-            String iusername = username;
-            String ipassword = password;
+            String header= request.getHeader("Authorization");
+            String basicAuthEncoded = header.substring(6);
+            String basicAuthAsString = new String(Base64.getDecoder().decode(basicAuthEncoded.getBytes()));
+            final String[] credentialValues = basicAuthAsString.split(":", 2);
+
+            String iusername=credentialValues[0];
+            String ipassword=credentialValues[1];
 
             List<User> a=userRepository.findAll();
+
             int authorizeTag=0;//1 means authorized
             for (User singleRecord:a
                  ) {
                 //System.out.println("Now identifying "+singleRecord.getName()+","+singleRecord.getpassword());
-                if((singleRecord.getName().equals(iusername))&&BCrypt.checkpw(ipassword,singleRecord.getpassword() )){
+                if((singleRecord.getName().equals(iusername))&&(singleRecord.getRealpassword().equals(ipassword)) ){
                     authorizeTag=100;
                     //output current time
                     Date now = new Date();
@@ -87,16 +98,27 @@ public class UserController {
         }
 
         // register function
-        @RequestMapping(value = "/user/register",method = RequestMethod.POST)
+        @RequestMapping(value = "/user/register",method = RequestMethod.POST,produces="application/json")
         @ResponseBody
-        public String RegisterNewUser(@RequestHeader String username,@RequestHeader String password) throws JSONException {
+        public String RegisterNewUser(HttpServletRequest request, HttpServletResponse response) throws JSONException {
+
             String result=" ";
             JSONObject jsonObject = new JSONObject();
+            List<User> a=userRepository.findAll();
             int code=0;
             //0 means OK
             //1 means occupied
             //2 means username is not a email address
             //3 means password is not strong enough
+
+            String header= request.getHeader("Authorization");
+            String basicAuthEncoded = header.substring(6);
+            String basicAuthAsString = new String(Base64.getDecoder().decode(basicAuthEncoded.getBytes()));
+            final String[] credentialValues = basicAuthAsString.split(":", 2);
+
+            String username=credentialValues[0];
+            String password=credentialValues[1];
+
 
             //username=email? check
             if(isEmail(username)==false){
@@ -158,7 +180,7 @@ public class UserController {
 
 
 
-            List<User> a=userRepository.findAll();
+
             for(User singleRecord:a){
                 if(singleRecord.getName().equals(username)){code=1;}
             }
@@ -186,72 +208,6 @@ public class UserController {
             return result;
         }
 
-
-
-
-
-        //function of assignment3: CRUD
-        @RequestMapping(value = "/Create",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
-        @ResponseBody
-        public String Create(@RequestHeader String username, @RequestHeader String password,
-                             @RequestHeader String noteTitle,@RequestHeader String content) throws JSONException {
-            List<User> a=userRepository.findAll();
-            String currentUser=null;
-            String result=null;
-            int match=0;
-            JSONObject jsonObject = new JSONObject();
-
-            for(User singleRecord:a){
-                if((singleRecord.getName().equals(username))&&BCrypt.checkpw(password,singleRecord.getpassword() )){
-                    match=1;//match a legal user, go on
-                    currentUser=singleRecord.getName();
-                    break;
-                }
-            }
-            //check if user-password is valid
-            if(match==0){
-                jsonObject.put("Error message:","Sorry, username and password are not valid!");
-                jsonObject.put("Status:","500");
-                String p=jsonObject.toString();
-                return p;
-            }
-            match=1;
-
-            if(noteTitle==null){
-                jsonObject.put("User:",currentUser);
-                jsonObject.put("Condition:","User log in success!");
-                jsonObject.put("Error message:","Note title can't be null.");
-                jsonObject.put("Status:","500");
-                String p=jsonObject.toString();
-                return p;
-            }
-
-            if(content==null){
-                jsonObject.put("User:",currentUser);
-                jsonObject.put("Condition:","User log in success!");
-                jsonObject.put("Error message:","Note content can't be null.");
-                jsonObject.put("Status:","500");
-                String p=jsonObject.toString();
-                return p;
-            }
-
-            if(match==1){
-                Note tempnote=new Note();
-                tempnote.setOwner_name(currentUser);
-                tempnote.setContent(content);
-                tempnote.setNote_title(noteTitle);
-                noteRepository.save(tempnote);
-                jsonObject.put("User:",currentUser);
-                jsonObject.put("Condition:","User log in success!");
-                jsonObject.put("Operation:","Create a new note");
-                jsonObject.put("Result:","Create success!");
-                jsonObject.put("New note title:",tempnote.getNote_title());
-                jsonObject.put("Status:","200");
-                result=jsonObject.toString();
-
-            }
-            return result;
-        }
 
 }
 
