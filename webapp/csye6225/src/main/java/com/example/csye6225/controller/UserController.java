@@ -8,7 +8,10 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -37,18 +40,24 @@ public class UserController {
         //redo: add basic auth
         @RequestMapping(value = "/",method = RequestMethod.GET,produces = "application/json;charset=UTF-8")
         @ResponseBody
-        public String getTime(@RequestHeader String username, @RequestHeader String password) throws JSONException {
+        public String getTime(HttpServletRequest request, HttpServletResponse response) throws JSONException {
             String s=" ";
             JSONObject jsonObject = new JSONObject();
-            String iusername = username;
-            String ipassword = password;
+            String header= request.getHeader("Authorization");
+            String basicAuthEncoded = header.substring(6);
+            String basicAuthAsString = new String(Base64.getDecoder().decode(basicAuthEncoded.getBytes()));
+            final String[] credentialValues = basicAuthAsString.split(":", 2);
+
+            String iusername=credentialValues[0];
+            String ipassword=credentialValues[1];
 
             List<User> a=userRepository.findAll();
+
             int authorizeTag=0;//1 means authorized
             for (User singleRecord:a
                  ) {
                 //System.out.println("Now identifying "+singleRecord.getName()+","+singleRecord.getpassword());
-                if((singleRecord.getName().equals(iusername))&&BCrypt.checkpw(ipassword,singleRecord.getpassword() )){
+                if((singleRecord.getName().equals(iusername))&&(singleRecord.getRealpassword().equals(ipassword)) ){
                     authorizeTag=100;
                     //output current time
                     Date now = new Date();
@@ -87,16 +96,27 @@ public class UserController {
         }
 
         // register function
-        @RequestMapping(value = "/user/register",method = RequestMethod.POST)
+        @RequestMapping(value = "/user/register",method = RequestMethod.POST,produces="application/json")
         @ResponseBody
-        public String RegisterNewUser(@RequestHeader String username,@RequestHeader String password) throws JSONException {
+        public String RegisterNewUser(HttpServletRequest request, HttpServletResponse response) throws JSONException {
+
             String result=" ";
             JSONObject jsonObject = new JSONObject();
+            List<User> a=userRepository.findAll();
             int code=0;
             //0 means OK
             //1 means occupied
             //2 means username is not a email address
             //3 means password is not strong enough
+
+            String header= request.getHeader("Authorization");
+            String basicAuthEncoded = header.substring(6);
+            String basicAuthAsString = new String(Base64.getDecoder().decode(basicAuthEncoded.getBytes()));
+            final String[] credentialValues = basicAuthAsString.split(":", 2);
+
+            String username=credentialValues[0];
+            String password=credentialValues[1];
+
 
             //username=email? check
             if(isEmail(username)==false){
@@ -158,7 +178,7 @@ public class UserController {
 
 
 
-            List<User> a=userRepository.findAll();
+
             for(User singleRecord:a){
                 if(singleRecord.getName().equals(username)){code=1;}
             }
@@ -193,16 +213,24 @@ public class UserController {
         //function of assignment3: CRUD
         @RequestMapping(value = "/Create",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
         @ResponseBody
-        public String Create(@RequestHeader String username, @RequestHeader String password,
-                             @RequestHeader String noteTitle,@RequestHeader String content) throws JSONException {
+        public String Create(HttpServletRequest request,
+                             HttpServletResponse response) throws JSONException {
             List<User> a=userRepository.findAll();
-            String currentUser=null;
+            String header= request.getHeader("Authorization");
+            String basicAuthEncoded = header.substring(6);
+            String basicAuthAsString = new String(Base64.getDecoder().decode(basicAuthEncoded.getBytes()));
+            final String[] credentialValues = basicAuthAsString.split(":", 2);
+            String username=credentialValues[0];
+            String password=credentialValues[1];
+            String currentUser=credentialValues[0];
+            String noteTitle=request.getHeader("noteTitle");
+            String content=request.getHeader("content");
             String result=null;
             int match=0;
             JSONObject jsonObject = new JSONObject();
 
             for(User singleRecord:a){
-                if((singleRecord.getName().equals(username))&&BCrypt.checkpw(password,singleRecord.getpassword() )){
+                if((singleRecord.getName().equals(username))&& (singleRecord.getRealpassword().equals(password))){
                     match=1;//match a legal user, go on
                     currentUser=singleRecord.getName();
                     break;
@@ -252,6 +280,7 @@ public class UserController {
             }
             return result;
         }
+
 
 }
 
