@@ -1,3 +1,4 @@
+//This code explains us the note operations.
 package com.example.csye6225.controller;
 
 import com.example.csye6225.Note;
