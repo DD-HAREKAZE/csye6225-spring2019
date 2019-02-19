@@ -2,15 +2,18 @@ package com.example.csye6225.controller;
 
 
 import com.example.csye6225.User;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -23,52 +26,65 @@ import java.util.regex.Pattern;
 public class UserController {
         @Autowired
         private UserRepository userRepository;
+        @Autowired
+        private NoteRepository noteRepository;
+
         //test function: show all users
         @RequestMapping("/getAllStudent")
         public List<User> getAllStudent(){
             return userRepository.findAll();
         }
 
-        // assignment1:/GET current time
-        @RequestMapping(value = "/GET",method = RequestMethod.GET)
-//        public String getTime(HttpServletRequest request,@RequestHeader HttpHeaders headers){
-        public String getTime(@RequestHeader String username,@RequestHeader String password){
+
+
+
+        // assignment1 GET method:/ return current time
+        //redo: add basic auth
+        @RequestMapping(value = "/",method = RequestMethod.GET,produces = "application/json;charset=UTF-8")
+        @ResponseBody
+        public String getTime(HttpServletRequest request, HttpServletResponse response) throws JSONException {
             String s=" ";
-//            String iusername = request.getHeader("username");
-//            String ipassword = request.getHeader("password");
+            JSONObject jsonObject = new JSONObject();
+            String header= request.getHeader("Authorization");
+            String basicAuthEncoded = header.substring(6);
+            String basicAuthAsString = new String(Base64.getDecoder().decode(basicAuthEncoded.getBytes()));
+            final String[] credentialValues = basicAuthAsString.split(":", 2);
 
-
-            String iusername = username;
-            String ipassword = password;
+            String iusername=credentialValues[0];
+            String ipassword=credentialValues[1];
 
             List<User> a=userRepository.findAll();
-//            s=iusername+ipassword;
+
             int authorizeTag=0;//1 means authorized
             for (User singleRecord:a
                  ) {
                 //System.out.println("Now identifying "+singleRecord.getName()+","+singleRecord.getpassword());
-                if((singleRecord.getName().equals(iusername))&&singleRecord.getpassword().equals(ipassword) ){
+                if((singleRecord.getName().equals(iusername))&&(singleRecord.getRealpassword().equals(ipassword)) ){
                     authorizeTag=100;
                     //output current time
                     Date now = new Date();
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String hehe = dateFormat.format( now );
-
-
-                    s="Welcome log in, "+iusername+"! Current time is: "+hehe;
+                    jsonObject.put("User: ",iusername);
+                    jsonObject.put("Current time: ",hehe);
+                    jsonObject.put("Status: ","200");
+                    s=jsonObject.toString();
                     break;
                 }
             }
             if(authorizeTag==0){
-                s="You are not currently logged in. You need to log in first.";
+                jsonObject.put("Error: ","You need to log in.");
+                jsonObject.put("Status: ","500");
+                s=jsonObject.toString();
             }
-            return s;
+
+        return s;
         }
 
 
 
 
-        //check if a username is an email address or not
+    //check if a username is an email address or not
         public static boolean isEmail(String string) {
             if (string == null) return false;
             String regEx1 = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
@@ -82,24 +98,42 @@ public class UserController {
         }
 
         // register function
-        @RequestMapping(value = "/user/register",method = RequestMethod.POST)
-        public String RegisterNewUser(@RequestHeader String username,@RequestHeader String password){
+        @RequestMapping(value = "/user/register",method = RequestMethod.POST,produces="application/json")
+        @ResponseBody
+        public String RegisterNewUser(HttpServletRequest request, HttpServletResponse response) throws JSONException {
+
             String result=" ";
+            JSONObject jsonObject = new JSONObject();
+            List<User> a=userRepository.findAll();
             int code=0;
             //0 means OK
             //1 means occupied
             //2 means username is not a email address
             //3 means password is not strong enough
 
+            String header= request.getHeader("Authorization");
+            String basicAuthEncoded = header.substring(6);
+            String basicAuthAsString = new String(Base64.getDecoder().decode(basicAuthEncoded.getBytes()));
+            final String[] credentialValues = basicAuthAsString.split(":", 2);
+
+            String username=credentialValues[0];
+            String password=credentialValues[1];
+
+
             //username=email? check
             if(isEmail(username)==false){
-                String p="Error: username must be an email address!";
+                jsonObject.put("Error message:","Username is not an email address.");
+                jsonObject.put("Status:","500");
+                String p=jsonObject.toString();
                 return p;
             }
 
             //password strong? check
             if(password.length()<=8){
-                return "The length of password should be over 8.";
+                jsonObject.put("Error message:","Password length should be over 8.");
+                jsonObject.put("Status:","500");
+                String p=jsonObject.toString();
+                return p;
             }
             String reg = "[A-Z]";
             Pattern pattern = Pattern.compile(reg);
@@ -109,7 +143,10 @@ public class UserController {
                 j++;
             }
             if(j==0){
-                return "You need at least one upper case char in password.";
+                jsonObject.put("Error message:","You need at least one upper case char in password.");
+                jsonObject.put("Status:","500");
+                String p=jsonObject.toString();
+                return p;
             }
 
             String reg2= "[a-z]";
@@ -120,7 +157,10 @@ public class UserController {
                 k++;
             }
             if(k==0){
-                return "You need at least one lower case char in password.";
+                jsonObject.put("Error message:","You need at least one lower case char in password.");
+                jsonObject.put("Status:","500");
+                String p=jsonObject.toString();
+                return p;
             }
 
             String reg3 = "[0-9]";
@@ -131,19 +171,24 @@ public class UserController {
                 l++;
             }
             if(l==0){
-                return "You need at least one number in password.";
+                jsonObject.put("Error message:","You need at least one number in password.");
+                jsonObject.put("Status:","500");
+                String p=jsonObject.toString();
+                return p;
             }
 
 
 
 
-            List<User> a=userRepository.findAll();
+
             for(User singleRecord:a){
                 if(singleRecord.getName().equals(username)){code=1;}
             }
             if(code==1){
-                result="Sorry, this account already exists!";
-                return result;
+                jsonObject.put("Error message:","Sorry, this account already exists!");
+                jsonObject.put("Status:","500");
+                String p=jsonObject.toString();
+                return p;
             }
             if(code==0){
                 User temp=new User();
@@ -152,11 +197,18 @@ public class UserController {
                 temp.setPassword(codepass);
                 temp.setRealpassword(password);
                 userRepository.save(temp);
-                result="Register success! Your username is: "+temp.getName()+" and your password is: "+temp.getRealpassword();
+                jsonObject.put("Message:","Register success!");
+                jsonObject.put("Your username:",temp.getName());
+                jsonObject.put("Your password:",temp.getRealpassword());
+                jsonObject.put("Status:","200");
+                result=jsonObject.toString();
+
             }
 
             return result;
         }
+
+
 }
 
 
