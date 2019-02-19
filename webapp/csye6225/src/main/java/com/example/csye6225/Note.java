@@ -15,9 +15,12 @@ public class Note {
     private String title;
 
     @Column(columnDefinition = "VARCHAR(4096)")
-    private String description;
+    private String content;
 
     private int userID;
+
+    private String created_on;
+    private String last_updated_on;
 
     public int getID() {
         return ID;
@@ -27,12 +30,20 @@ public class Note {
         return title;
     }
 
-    public String getDescription() {
-        return description;
+    public String getContent() {
+        return content;
     }
 
     public int getUserID() {
         return userID;
+    }
+
+    public String getCreated_on() {
+        return created_on;
+    }
+
+    public String getLast_updated_on() {
+        return last_updated_on;
     }
 
     public void setID(int ID) {
@@ -43,11 +54,19 @@ public class Note {
         this.title = title;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public void setUserID(int userID) {
         this.userID = userID;
+    }
+
+    public void setCreated_on(String created_on) {
+        this.created_on = created_on;
+    }
+
+    public void setLast_updated_on(String last_updated_on) {
+        this.last_updated_on = last_updated_on;
     }
 }

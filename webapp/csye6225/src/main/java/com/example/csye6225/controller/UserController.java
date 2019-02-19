@@ -20,22 +20,11 @@ import java.util.regex.Pattern;
 
 @RestController
 
-@RequestMapping("/testboot")
-
 public class UserController {
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private NoteRepository noteRepository;
-
-    //test function: show all users
-    @RequestMapping("/getAllStudent")
-    public List<User> getAllStudent(){
-        return userRepository.findAll();
-    }
-
-
-
 
     // assignment1 GET method:/ return current time
     //redo: add basic auth
@@ -97,7 +86,7 @@ public class UserController {
     }
 
     // register function
-    @RequestMapping(value = "/user/register",method = RequestMethod.POST,produces="application/json")
+    @RequestMapping(value = "/register",method = RequestMethod.POST,produces="application/json")
     @ResponseBody
     public String RegisterNewUser(HttpServletRequest request, HttpServletResponse response) throws JSONException {
 

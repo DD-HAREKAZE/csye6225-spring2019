@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 @Controller    // This means that this class is a Controller
@@ -23,7 +25,7 @@ public class NoteController {
     @Autowired
     private UserRepository userRepository;
 
-    @RequestMapping(value="/allnotes",method= RequestMethod.GET,produces="application/json")
+    @RequestMapping(value="/note",method= RequestMethod.GET,produces="application/json")
     public @ResponseBody String getNotes (HttpServletRequest request, HttpServletResponse response){
 
         JsonObject jsonObject = new JsonObject();
@@ -41,38 +43,38 @@ public class NoteController {
                     for(Note n:note) {
                         System.out.println(n.getID());
                         if(n.getUserID() == userID) {
-                            System.out.println(userID);
                             JsonObject j = new JsonObject();
-                            j.addProperty("ID",n.getID());
+                            j.addProperty("id",n.getID());
+                            j.addProperty("content",n.getContent());
                             j.addProperty("title",n.getTitle());
-                            j.addProperty("description",n.getDescription());
+                            j.addProperty("created_on",n.getCreated_on());
+                            j.addProperty("last_updated_on",n.getLast_updated_on());
                             jsonObject.add(String.valueOf(i),j);
-                            i++;
                         }
                         else{
                             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                            jsonObject.addProperty("message", "You are not authorized to perform this activity");
+                            jsonObject.addProperty("message", "401:Unauthorized");
                         }
+                        i++;
                     }
-                    jsonObject.addProperty("message", "note got successfully.");
-                    jsonObject.addProperty("userID",userID);
+                    response.setStatus(200);
                     return jsonObject.toString();
 
                 }
                 else{
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    jsonObject.addProperty("message", "This is a bad request");
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND );
+                    jsonObject.addProperty("message", "404:Not Found");
                 }
 
             }
             else{
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                jsonObject.addProperty("message", "You are not authorized to perform this activity");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                jsonObject.addProperty("message", "400:Bad Request");
             }
         }
         else{
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            jsonObject.addProperty("message", "You are not authorized to perform this activity");
+            jsonObject.addProperty("message", "401:Unauthorized");
         }
 
 
@@ -80,7 +82,7 @@ public class NoteController {
 
     }
 
-    @RequestMapping(value="/notes/{id}",method= RequestMethod.GET,produces="application/json")
+    @RequestMapping(value="/note/{id}",method= RequestMethod.GET,produces="application/json")
     public @ResponseBody String getNote (HttpServletRequest request, HttpServletResponse response){
 
         JsonObject jsonObject = new JsonObject();
@@ -97,32 +99,33 @@ public class NoteController {
                 Note note = noteRepository.findById(noteID).get();
                 if(note != null) {
                     if(note.getUserID() == userID) {
-                        jsonObject.addProperty("message", "Note got successfully.");
-                        jsonObject.addProperty("userID",note.getUserID());
-                        jsonObject.addProperty("ID",note.getID());
+                        jsonObject.addProperty("id",note.getID());
+                        jsonObject.addProperty("content",note.getContent());
                         jsonObject.addProperty("title",note.getTitle());
-                        jsonObject.addProperty("description",note.getDescription());
+                        jsonObject.addProperty("created_on",note.getCreated_on());
+                        jsonObject.addProperty("last_updated_on",note.getLast_updated_on());
+                        response.setStatus(200);
                         return jsonObject.toString();
                     }
                     else{
                         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                        jsonObject.addProperty("message", "You are not authorized to perform this activity");
+                        jsonObject.addProperty("message", "401:Unauthorized");
                     }
                 }
                 else{
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    jsonObject.addProperty("message", "This is a bad request");
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    jsonObject.addProperty("message", "404:Not Found");
                 }
 
             }
             else{
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                jsonObject.addProperty("message", "You are not authorized to perform this activity");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                jsonObject.addProperty("message", "400:Bad Request");
             }
         }
         else{
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            jsonObject.addProperty("message", "You are not authorized to perform this activity");
+            jsonObject.addProperty("message", "401:Unauthorized");
         }
 
 
@@ -130,15 +133,13 @@ public class NoteController {
 
     }
 
-    @RequestMapping(value = "/addnotes", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "/note", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public String addNote(@RequestHeader String title, @RequestHeader String description, HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("start");
+    public String addNote(@RequestHeader String title, @RequestHeader String content, HttpServletRequest request, HttpServletResponse response) {
         JsonObject jsonObject = new JsonObject();
 
-        if(description.length() < 4096) {
+        if(content.length() < 4096) {
             String header = request.getHeader("Authorization");
-            System.out.println("auth");
             if (header != null) {
 
                 int userID;
@@ -148,39 +149,44 @@ public class NoteController {
                     Note note = new Note();
                     note.setUserID(userID);
                     note.setTitle(title);
-                    note.setDescription(description);
+                    note.setContent(content);
+                    Date now = new Date();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String hehe = dateFormat.format( now );
+                    note.setCreated_on(hehe);
+                    note.setLast_updated_on(hehe);
 
                     noteRepository.save(note);
 
-
-                    jsonObject.addProperty("message", "note has been created successfully for the User.");
-                    jsonObject.addProperty("userId", note.getUserID());
-                    jsonObject.addProperty("noteID", note.getID());
+                    jsonObject.addProperty("id", note.getID());
+                    jsonObject.addProperty("content", note.getContent());
                     jsonObject.addProperty("title",note.getTitle());
-                    jsonObject.addProperty("noteDescription", note.getDescription());
+                    jsonObject.addProperty("created_on",note.getCreated_on());
+                    jsonObject.addProperty("last_updated_on",note.getLast_updated_on());
+                    response.setStatus(201);
                     return jsonObject.toString();
                 }
                 else
                 {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    jsonObject.addProperty("message", "You are not authorized to perform this activity");
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    jsonObject.addProperty("message", "400:Bad Request");
                 }
             }
             else{
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                jsonObject.addProperty("message", "You are not authorized to perform this activity");
+                jsonObject.addProperty("message", "401:Unauthorized");
             }
         }
         else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            jsonObject.addProperty("message", "Description exceeds maximum number of allowed characters.");
+            jsonObject.addProperty("message", "400:Bad Request");
         }
 
         return jsonObject.toString();
     }
 
-    @RequestMapping(value="/notes/{id}",method= RequestMethod.PUT,produces="application/json")
-    public @ResponseBody String updateNote (@RequestHeader String title, @RequestHeader String description, HttpServletRequest request, HttpServletResponse response){
+    @RequestMapping(value="/note/{id}",method= RequestMethod.PUT,produces="application/json")
+    public @ResponseBody String updateNote (@RequestHeader String title, @RequestHeader String content, HttpServletRequest request, HttpServletResponse response){
 
         JsonObject jsonObject = new JsonObject();
 
@@ -197,30 +203,35 @@ public class NoteController {
                 if(note != null) {
                     if(note.getUserID() == userID) {
                         note.setTitle(title);
-                        note.setDescription(description);
+                        note.setContent(content);
+                        Date now = new Date();
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        String hehe = dateFormat.format( now );
+                        note.setLast_updated_on(hehe);
                         noteRepository.save(note);
-                        jsonObject.addProperty("message", "note updated successfully.");
+                        response.setStatus(200);
+                        jsonObject.addProperty("message" ,"200:OK");
                         return jsonObject.toString();
                     }
                     else{
                         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                        jsonObject.addProperty("message", "You are not authorized to perform this activity");
+                        jsonObject.addProperty("message", "401:Unauthorized");
                     }
                 }
                 else{
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    jsonObject.addProperty("message", "This is a bad request");
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    jsonObject.addProperty("message", "404:Not Found");
                 }
 
             }
             else{
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                jsonObject.addProperty("message", "You are not authorized to perform this activity");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                jsonObject.addProperty("message", "400:Bad Request");
             }
         }
         else{
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            jsonObject.addProperty("message", "You are not authorized to perform this activity");
+            jsonObject.addProperty("message", "401:Unauthorized");
         }
 
 
@@ -229,7 +240,7 @@ public class NoteController {
     }
 
 
-    @RequestMapping(value="/notes/{id}",method= RequestMethod.DELETE,produces="application/json")
+    @RequestMapping(value="/note/{id}",method= RequestMethod.DELETE,produces="application/json")
     public @ResponseBody String deleteNote (HttpServletRequest request, HttpServletResponse response) {
 
         JsonObject jsonObject = new JsonObject();
@@ -245,29 +256,29 @@ public class NoteController {
                 if(note != null) {
                     if(note.getUserID() == userID) {
                         noteRepository.delete(note);
-                        jsonObject.addProperty("message", "note deleted successfully.");
+                        jsonObject.addProperty("message", "200:OK");
                         return jsonObject.toString();
                     }
                     else{
                         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                        jsonObject.addProperty("message", "You are not authorized to perform this activity");
+                        jsonObject.addProperty("message", "401:Unauthorized");
                     }
 
                 }
                 else{
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    jsonObject.addProperty("message", "This is a bad request");
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    jsonObject.addProperty("message", "404:Not Found");
                 }
 
             }
             else{
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                jsonObject.addProperty("message", "You are not authorized to perform this activity");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                jsonObject.addProperty("message", "400:Bad Request");
             }
         }
         else{
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            jsonObject.addProperty("message", "You are not authorized to perform this activity");
+            jsonObject.addProperty("message", "401:Unauthorized");
         }
 
         return jsonObject.toString();
