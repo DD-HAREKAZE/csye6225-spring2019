@@ -28,35 +28,35 @@ public class NoteController {
     @Autowired
     private UserRepository userRepository;
 
-    @RequestMapping(value="/note",method= RequestMethod.GET,produces="application/json")
+    @RequestMapping(value = "/note", method = RequestMethod.GET, produces = "application/json")
 
-    public @ResponseBody String getNotes (HttpServletRequest request, HttpServletResponse response){
+    public @ResponseBody
+    String getNotes(HttpServletRequest request, HttpServletResponse response) {
 
         JsonObject jsonObject = new JsonObject();
 
         String header = request.getHeader("Authorization");
-        if(header != null) {
+        if (header != null) {
 
             int userID = GetUserDetails(header);
 
             if (userID > -1) {
 
                 List<Note> note = noteRepository.findByUserID(userID);
-                if(note != null) {
-                    int i=1;
-                    for(Note n:note) {
+                if (note != null) {
+                    int i = 1;
+                    for (Note n : note) {
                         System.out.println(n.getID());
-                        if(n.getUserID() == userID) {
+                        if (n.getUserID() == userID) {
 
                             JsonObject j = new JsonObject();
-                            j.addProperty("id",n.getID());
-                            j.addProperty("content",n.getContent());
-                            j.addProperty("title",n.getTitle());
-                            j.addProperty("created_on",n.getCreated_on());
-                            j.addProperty("last_updated_on",n.getLast_updated_on());
-                            jsonObject.add(String.valueOf(i),j);
-                        }
-                        else{
+                            j.addProperty("id", n.getID());
+                            j.addProperty("content", n.getContent());
+                            j.addProperty("title", n.getTitle());
+                            j.addProperty("created_on", n.getCreated_on());
+                            j.addProperty("last_updated_on", n.getLast_updated_on());
+                            jsonObject.add(String.valueOf(i), j);
+                        } else {
                             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                             jsonObject.addProperty("message", "401:Unauthorized");
                         }
@@ -65,23 +65,20 @@ public class NoteController {
                     response.setStatus(200);
                     return jsonObject.toString();
 
-                }
-                else{
+                } else {
 
-                    response.setStatus(HttpServletResponse.SC_NOT_FOUND );
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     jsonObject.addProperty("message", "404:Not Found");
 
                 }
 
-            }
-            else{
+            } else {
 
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 jsonObject.addProperty("message", "400:Bad Request");
 
             }
-        }
-        else{
+        } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             jsonObject.addProperty("message", "401:Unauthorized");
 
@@ -92,53 +89,49 @@ public class NoteController {
 
     }
 
-    @RequestMapping(value="/note/{id}",method= RequestMethod.GET,produces="application/json")
+    @RequestMapping(value = "/note/{id}", method = RequestMethod.GET, produces = "application/json")
 
-    public @ResponseBody String getNote (HttpServletRequest request, HttpServletResponse response){
+    public @ResponseBody
+    String getNote(HttpServletRequest request, HttpServletResponse response) {
 
         JsonObject jsonObject = new JsonObject();
 
         int noteID = Integer.parseInt(request.getRequestURI().split("/")[2]);
 
         String header = request.getHeader("Authorization");
-        if(header != null) {
+        if (header != null) {
 
             int userID = GetUserDetails(header);
 
             if (userID > -1) {
 
                 Note note = noteRepository.findById(noteID).get();
-                if(note != null) {
-                    if(note.getUserID() == userID) {
+                if (note != null) {
+                    if (note.getUserID() == userID) {
 
-                        jsonObject.addProperty("id",note.getID());
-                        jsonObject.addProperty("content",note.getContent());
-                        jsonObject.addProperty("title",note.getTitle());
-                        jsonObject.addProperty("created_on",note.getCreated_on());
-                        jsonObject.addProperty("last_updated_on",note.getLast_updated_on());
+                        jsonObject.addProperty("id", note.getID());
+                        jsonObject.addProperty("content", note.getContent());
+                        jsonObject.addProperty("title", note.getTitle());
+                        jsonObject.addProperty("created_on", note.getCreated_on());
+                        jsonObject.addProperty("last_updated_on", note.getLast_updated_on());
                         response.setStatus(200);
-
                         return jsonObject.toString();
-                    }
-                    else{
+                    } else {
                         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                         jsonObject.addProperty("message", "401:Unauthorized");
                     }
-                }
-                else{
+                } else {
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     jsonObject.addProperty("message", "404:Not Found");
 
                 }
 
-            }
-            else{
+            } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 jsonObject.addProperty("message", "400:Bad Request");
 
             }
-        }
-        else{
+        } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             jsonObject.addProperty("message", "401:Unauthorized");
 
@@ -152,10 +145,10 @@ public class NoteController {
 
     @RequestMapping(value = "/note", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public String addNote(@RequestHeader String title, @RequestHeader String content, HttpServletRequest request, HttpServletResponse response) {
+    public String addNote(@RequestBody Note n, HttpServletRequest request, HttpServletResponse response) {
         JsonObject jsonObject = new JsonObject();
 
-        if(content.length() < 4096) {
+        if (n.getContent().length() < 4096) {
             String header = request.getHeader("Authorization");
             if (header != null) {
 
@@ -165,37 +158,39 @@ public class NoteController {
 
                     Note note = new Note();
                     note.setUserID(userID);
-                    note.setTitle(title);
-                    note.setContent(content);
-                    Date now = new Date();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String hehe = dateFormat.format( now );
-                    note.setCreated_on(hehe);
-                    note.setLast_updated_on(hehe);
+                    if (n.getTitle()!=null && n.getContent()!=null){
+                        note.setTitle(n.getTitle());
+                        note.setContent(n.getContent());
+                        Date now = new Date();
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        String hehe = dateFormat.format(now);
+                        note.setCreated_on(hehe);
+                        note.setLast_updated_on(hehe);
 
-                    noteRepository.save(note);
+                        noteRepository.save(note);
 
-                    jsonObject.addProperty("id", note.getID());
-                    jsonObject.addProperty("content", note.getContent());
-                    jsonObject.addProperty("title",note.getTitle());
-                    jsonObject.addProperty("created_on",note.getCreated_on());
-                    jsonObject.addProperty("last_updated_on",note.getLast_updated_on());
-                    response.setStatus(201);
-                    return jsonObject.toString();
-                }
-                else
-                {
+                        jsonObject.addProperty("id", note.getID());
+                        jsonObject.addProperty("content", note.getContent());
+                        jsonObject.addProperty("title", note.getTitle());
+                        jsonObject.addProperty("created_on", note.getCreated_on());
+                        jsonObject.addProperty("last_updated_on", note.getLast_updated_on());
+                        response.setStatus(201);
+                        return jsonObject.toString();
+                    }else {
+                        response.setStatus(204);
+                        jsonObject.addProperty("message","204:No Content");
+                    }
+
+                } else {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     jsonObject.addProperty("message", "400:Bad Request");
 
                 }
-            }
-            else{
+            } else {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 jsonObject.addProperty("message", "401:Unauthorized");
             }
-        }
-        else {
+        } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             jsonObject.addProperty("message", "400:Bad Request");
 
@@ -204,52 +199,49 @@ public class NoteController {
         return jsonObject.toString();
     }
 
-    @RequestMapping(value="/note/{id}",method= RequestMethod.PUT,produces="application/json")
-    public @ResponseBody String updateNote (@RequestHeader String title, @RequestHeader String content, HttpServletRequest request, HttpServletResponse response){
+    @RequestMapping(value = "/note/{id}", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    String updateNote(@RequestBody Note n, HttpServletRequest request, HttpServletResponse response) {
 
         JsonObject jsonObject = new JsonObject();
 
         int noteID = Integer.parseInt(request.getRequestURI().split("/")[2]);
 
         String header = request.getHeader("Authorization");
-        if(header != null) {
+        if (header != null) {
 
             int userID = GetUserDetails(header);
 
             if (userID > -1) {
 
                 Note note = noteRepository.findById(noteID).get();
-                if(note != null) {
-                    if(note.getUserID() == userID) {
-                        note.setTitle(title);
-                        note.setContent(content);
+                if (note != null) {
+                    if (note.getUserID() == userID) {
+                        if (n.getTitle() != null) note.setTitle(n.getTitle());
+                        if (n.getContent() != null) note.setContent(n.getContent());
                         Date now = new Date();
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        String hehe = dateFormat.format( now );
+                        String hehe = dateFormat.format(now);
                         note.setLast_updated_on(hehe);
                         noteRepository.save(note);
                         response.setStatus(200);
-                        jsonObject.addProperty("message" ,"200:OK");
+                        jsonObject.addProperty("message", "200:OK");
 
                         return jsonObject.toString();
-                    }
-                    else{
+                    } else {
                         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                         jsonObject.addProperty("message", "401:Unauthorized");
                     }
-                }
-                else{
+                } else {
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     jsonObject.addProperty("message", "404:Not Found");
                 }
 
-            }
-            else{
+            } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 jsonObject.addProperty("message", "400:Bad Request");
             }
-        }
-        else{
+        } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             jsonObject.addProperty("message", "401:Unauthorized");
         }
@@ -260,43 +252,41 @@ public class NoteController {
     }
 
 
-    @RequestMapping(value="/note/{id}",method= RequestMethod.DELETE,produces="application/json")
-    public @ResponseBody String deleteNote (HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/note/{id}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    String deleteNote(HttpServletRequest request, HttpServletResponse response) {
 
         JsonObject jsonObject = new JsonObject();
         int noteID = Integer.parseInt(request.getRequestURI().split("/")[2]);
         String header = request.getHeader("Authorization");
-        if(header != null) {
+        if (header != null) {
 
             int userID = GetUserDetails(header);
 
             if (userID > -1) {
 
                 Note note = noteRepository.findById(noteID).get();
-                if(note != null) {
-                    if(note.getUserID() == userID) {
+                if (note != null) {
+                    if (note.getUserID() == userID) {
                         noteRepository.delete(note);
+                        response.setStatus(200);
                         jsonObject.addProperty("message", "200:OK");
                         return jsonObject.toString();
-                    }
-                    else{
+                    } else {
                         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                         jsonObject.addProperty("message", "401:Unauthorized");
                     }
 
-                }
-                else{
+                } else {
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     jsonObject.addProperty("message", "404:Not Found");
                 }
 
-            }
-            else{
+            } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 jsonObject.addProperty("message", "400:Bad Request");
             }
-        }
-        else{
+        } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             jsonObject.addProperty("message", "401:Unauthorized");
         }
@@ -316,7 +306,7 @@ public class NoteController {
             final String[] credentialValues = basicAuthAsString.split(":", 2);
             //If user exists in DB , return the user object.
             User user = validateUser(credentialValues[0], credentialValues[1]);
-            if(user != null) {
+            if (user != null) {
                 return user.getID();
             }
         }
@@ -327,11 +317,9 @@ public class NoteController {
     }
 
 
-    public User validateUser(String username, String password)
-    {
-        for(User user:userRepository.findAll())
-        {
-            if((user.getName().equals(username))&&BCrypt.checkpw(password,user.getpassword() ) )
+    public User validateUser(String username, String password) {
+        for (User user : userRepository.findAll()) {
+            if ((user.getName().equals(username)) && BCrypt.checkpw(password, user.getpassword()))
                 return user;
 
         }
