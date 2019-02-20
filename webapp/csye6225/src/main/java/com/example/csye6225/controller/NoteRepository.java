@@ -10,5 +10,6 @@ import java.util.List;
 // CRUD refers Create, Read, Update, Delete
 
 public interface NoteRepository extends JpaRepository<Note, Integer> {
+
     List<Note> findByUserID(int userID);
 }

@@ -13,7 +13,10 @@ import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
-//hehe
+
+import java.util.Base64;
+import java.util.List;
+
 @Controller    // This means that this class is a Controller
 
 public class NoteController {
@@ -26,6 +29,7 @@ public class NoteController {
     private UserRepository userRepository;
 
     @RequestMapping(value="/note",method= RequestMethod.GET,produces="application/json")
+
     public @ResponseBody String getNotes (HttpServletRequest request, HttpServletResponse response){
 
         JsonObject jsonObject = new JsonObject();
@@ -43,6 +47,7 @@ public class NoteController {
                     for(Note n:note) {
                         System.out.println(n.getID());
                         if(n.getUserID() == userID) {
+
                             JsonObject j = new JsonObject();
                             j.addProperty("id",n.getID());
                             j.addProperty("content",n.getContent());
@@ -62,19 +67,24 @@ public class NoteController {
 
                 }
                 else{
+
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND );
                     jsonObject.addProperty("message", "404:Not Found");
+
                 }
 
             }
             else{
+
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 jsonObject.addProperty("message", "400:Bad Request");
+
             }
         }
         else{
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             jsonObject.addProperty("message", "401:Unauthorized");
+
         }
 
 
@@ -83,6 +93,7 @@ public class NoteController {
     }
 
     @RequestMapping(value="/note/{id}",method= RequestMethod.GET,produces="application/json")
+
     public @ResponseBody String getNote (HttpServletRequest request, HttpServletResponse response){
 
         JsonObject jsonObject = new JsonObject();
@@ -99,12 +110,14 @@ public class NoteController {
                 Note note = noteRepository.findById(noteID).get();
                 if(note != null) {
                     if(note.getUserID() == userID) {
+
                         jsonObject.addProperty("id",note.getID());
                         jsonObject.addProperty("content",note.getContent());
                         jsonObject.addProperty("title",note.getTitle());
                         jsonObject.addProperty("created_on",note.getCreated_on());
                         jsonObject.addProperty("last_updated_on",note.getLast_updated_on());
                         response.setStatus(200);
+
                         return jsonObject.toString();
                     }
                     else{
@@ -115,23 +128,27 @@ public class NoteController {
                 else{
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     jsonObject.addProperty("message", "404:Not Found");
+
                 }
 
             }
             else{
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 jsonObject.addProperty("message", "400:Bad Request");
+
             }
         }
         else{
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             jsonObject.addProperty("message", "401:Unauthorized");
+
         }
 
 
         return jsonObject.toString();
 
     }
+
 
     @RequestMapping(value = "/note", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
@@ -170,6 +187,7 @@ public class NoteController {
                 {
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     jsonObject.addProperty("message", "400:Bad Request");
+
                 }
             }
             else{
@@ -180,6 +198,7 @@ public class NoteController {
         else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             jsonObject.addProperty("message", "400:Bad Request");
+
         }
 
         return jsonObject.toString();
@@ -211,6 +230,7 @@ public class NoteController {
                         noteRepository.save(note);
                         response.setStatus(200);
                         jsonObject.addProperty("message" ,"200:OK");
+
                         return jsonObject.toString();
                     }
                     else{

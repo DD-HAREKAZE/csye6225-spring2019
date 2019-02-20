@@ -15,6 +15,7 @@ public class Note {
     private String title;
 
     @Column(columnDefinition = "VARCHAR(4096)")
+
     private String content;
 
     private int userID;
