@@ -1,5 +1,7 @@
 package com.example.csye6225;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 
 
@@ -8,9 +10,10 @@ public class Note {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 
-    private int ID;
+    private String ID;
 
     private String title;
 
@@ -23,7 +26,7 @@ public class Note {
     private String created_on;
     private String last_updated_on;
 
-    public int getID() {
+    public String getID() {
         return ID;
     }
 
@@ -47,7 +50,7 @@ public class Note {
         return last_updated_on;
     }
 
-    public void setID(int ID) {
+    public void setID(String ID) {
         this.ID = ID;
     }
 
