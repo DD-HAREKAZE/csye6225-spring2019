@@ -1,8 +1,5 @@
-
 package com.example.csye6225.controller;
 
-
-import com.example.csye6225.Note;
 import com.example.csye6225.User;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,22 +17,11 @@ import java.util.regex.Pattern;
 
 @RestController
 
-@RequestMapping("/testboot")
-
 public class UserController {
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private NoteRepository noteRepository;
-
-    //test function: show all users
-    @RequestMapping("/getAllStudent")
-    public List<User> getAllStudent(){
-        return userRepository.findAll();
-    }
-
-
-
 
     // assignment1 GET method:/ return current time
     //redo: add basic auth
@@ -80,9 +66,6 @@ public class UserController {
         return s;
     }
 
-
-
-
     //check if a username is an email address or not
     public static boolean isEmail(String string) {
         if (string == null) return false;
@@ -97,7 +80,7 @@ public class UserController {
     }
 
     // register function
-    @RequestMapping(value = "/user/register",method = RequestMethod.POST,produces="application/json")
+    @RequestMapping(value = "/register",method = RequestMethod.POST,produces="application/json")
     @ResponseBody
     public String RegisterNewUser(HttpServletRequest request, HttpServletResponse response) throws JSONException {
 
@@ -175,10 +158,6 @@ public class UserController {
             String p=jsonObject.toString();
             return p;
         }
-
-
-
-
 
         for(User singleRecord:a){
             if(singleRecord.getName().equals(username)){code=1;}
