@@ -22,14 +22,14 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 public class uploadAMZ {
 
     static AmazonS3 s3;
-    static String AWS_ACCESS_KEY = "AKIAI2KUSZUVMVONE3YQ"; // 【你的 access_key】
-    static String AWS_SECRET_KEY = "2BW4ptBxjEvDs1pM5kgWTcy8QXI4IcJrMNlA/und"; // 【你的 aws_secret_key】
+    static String AWS_ACCESS_KEY = "AKIAI2KUSZUVMVONE3YQ";
+    static String AWS_SECRET_KEY = "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";
 
-    String bucketName = "cf-templates-eojwssbxp6cn-us-east-1"; // 【你 bucket 的名字】 # 首先需要保证 s3 上已经存在该存储桶
+    String bucketName = "cf-templates-eojwssbxp6cn-us-east-1";
 
     static {
         s3 = new AmazonS3Client(new BasicAWSCredentials(AWS_ACCESS_KEY, AWS_SECRET_KEY));
-        s3.setRegion(Region.getRegion(Regions.US_EAST_1)); // 此处根据自己的 s3 地区位置改变
+        s3.setRegion(Region.getRegion(Regions.US_EAST_1));
     }
 
     public String uploadfile(String filepath, String remoteFileName){

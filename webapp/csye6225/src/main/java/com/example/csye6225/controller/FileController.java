@@ -15,7 +15,6 @@ public class FileController {
 
     @Autowired
     private FilePathService filePathService;
-    // 传入的参数file是我们指定的文件
     @RequestMapping("/upload")
     @ResponseBody
     public String upload(@RequestParam("file") MultipartFile file) throws IOException {
