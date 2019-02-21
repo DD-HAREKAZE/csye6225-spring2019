@@ -80,7 +80,7 @@ public class UserController {
     }
 
     // register function
-    @RequestMapping(value = "/register",method = RequestMethod.POST,produces="application/json")
+    @RequestMapping(value = "/user/register",method = RequestMethod.POST,produces="application/json")
     @ResponseBody
     public String RegisterNewUser(HttpServletRequest request, HttpServletResponse response) throws JSONException {
 

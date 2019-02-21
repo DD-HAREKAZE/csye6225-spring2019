@@ -1,5 +1,7 @@
 package com.example.csye6225;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,27 +9,47 @@ import javax.persistence.Id;
 
 @Entity
 public class FilePath {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    public Integer id;
-    public String Path;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private String ID;
 
-    public Integer getId() {
-        return id;
-    }
+    private String path;
 
-    public void setId(Integer id) {
-        this.id = id;
+    private String noteID;
+
+    private String filename;
+
+    public String getID() {
+        return ID;
     }
 
     public String getPath() {
-        return Path;
+        return path;
+    }
+
+    public String getNoteID() {
+        return noteID;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
     }
 
     public void setPath(String path) {
-        Path = path;
+        this.path = path;
     }
 
+    public void setNoteID(String noteID) {
+        this.noteID = noteID;
+    }
 
-
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
 }

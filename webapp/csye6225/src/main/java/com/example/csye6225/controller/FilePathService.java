@@ -1,15 +1,15 @@
 package com.example.csye6225.controller;
 
 
+import java.io.IOException;
+
 import com.example.csye6225.FilePath;
-import com.example.csye6225.uploadAMZ;
+import com.example.csye6225.test.uploadAMZ;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @Service
 public class FilePathService {
@@ -17,32 +17,45 @@ public class FilePathService {
 
     @Autowired
     private FilePathRepository filePathRepository;
+    uploadAMZ A = new uploadAMZ();
 
-    public String Upload(@RequestParam("file") MultipartFile file) throws IOException {
-        if(!file.isEmpty()) {
-
+    public String Upload(@RequestParam("file") MultipartFile file){
+        if (!file.isEmpty()) {
             String fileName = file.getOriginalFilename();
-
-
-            String path = ClassUtils.getDefaultClassLoader().getResource("").getPath()+"static/";
-            String uploadpath=path+fileName;
-
+            String path = ClassUtils.getDefaultClassLoader().getResource("").getPath() + "static/";
+            String uploadpath = ClassUtils.getDefaultClassLoader().getResource("").getPath() + "static/" + fileName;
             try {
-
                 FileUtil.fileupload(file.getBytes(), path, fileName);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
-            uploadAMZ A = new uploadAMZ();
-            String amzurl = A.demo(uploadpath,fileName);
-
-            FilePath biaopath = new FilePath();
-            biaopath.setPath(amzurl);
-            filePathRepository.save(biaopath);
+            String U = A.uploadfile(uploadpath, fileName);
+            return U;
         }
         return "success";
+    }
+
+    public void delete(String filename) {
+
+        A.deletefile(filename);
 
     }
+
+    public String update(@RequestParam("file") MultipartFile file) {
+        if (!file.isEmpty()) {
+            String fileName = file.getOriginalFilename();
+
+            String path = ClassUtils.getDefaultClassLoader().getResource("").getPath() + "static/";
+            String uploadpath = ClassUtils.getDefaultClassLoader().getResource("").getPath() + "static/" + fileName;
+            try {
+                FileUtil.fileupload(file.getBytes(), path, fileName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String U = A.uploadfile(uploadpath, fileName);
+            return U;
+        }
+        return "success";
+    }
 }
+
