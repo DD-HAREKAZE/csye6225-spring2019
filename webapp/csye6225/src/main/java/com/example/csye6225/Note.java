@@ -1,5 +1,7 @@
 package com.example.csye6225;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 
 
@@ -8,18 +10,23 @@ public class Note {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 
-    private int ID;
+    private String ID;
 
     private String title;
 
     @Column(columnDefinition = "VARCHAR(4096)")
-    private String description;
+
+    private String content;
 
     private int userID;
 
-    public int getID() {
+    private String created_on;
+    private String last_updated_on;
+
+    public String getID() {
         return ID;
     }
 
@@ -27,15 +34,23 @@ public class Note {
         return title;
     }
 
-    public String getDescription() {
-        return description;
+    public String getContent() {
+        return content;
     }
 
     public int getUserID() {
         return userID;
     }
 
-    public void setID(int ID) {
+    public String getCreated_on() {
+        return created_on;
+    }
+
+    public String getLast_updated_on() {
+        return last_updated_on;
+    }
+
+    public void setID(String ID) {
         this.ID = ID;
     }
 
@@ -43,11 +58,19 @@ public class Note {
         this.title = title;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public void setUserID(int userID) {
         this.userID = userID;
+    }
+
+    public void setCreated_on(String created_on) {
+        this.created_on = created_on;
+    }
+
+    public void setLast_updated_on(String last_updated_on) {
+        this.last_updated_on = last_updated_on;
     }
 }

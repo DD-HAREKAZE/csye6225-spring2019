@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+echo "Enter the stack name to create"
+read stackname
+echo $stackname
+aws cloudformation create-stack --stack-name $stackname --template-body file://create.yaml
+=======
 #aws cloudformation create-stack --stack-name csye6225-Vpc --template-body file://create.yaml
 
 echo "Enter the detail of the stack creation"
@@ -26,3 +32,4 @@ read sName
 	else
 		echo "Stack Creation Successfull !!!"
 	fi
+>>>>>>> f7d41b4045af4e76d2c72b19b49067a6a1714f79

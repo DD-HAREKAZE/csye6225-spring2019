@@ -9,7 +9,10 @@
 |Yifu Xu|001422663|xu.yifu@northeastern.edu|
 |Amrith Prabhu|001447099|prabhu.am@husky.neu.edu|
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> f7d41b4045af4e76d2c72b19b49067a6a1714f79
 ## Technology Stack
 VMWare Workstation15 (provided by NEU software center)
 VM OS: Unbuntu 16.04
