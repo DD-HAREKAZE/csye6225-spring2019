@@ -1,173 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ChangeListManager">
-<<<<<<< HEAD
-    <list default="true" id="f244c077-fa36-4b13-b7bc-9d0e15480b2b" name="Default Changelist" comment="" />
-    <ignored path="$PROJECT_DIR$/out/" />
-=======
-    <list default="true" id="3a4a20e9-77fd-4660-adb5-d0323736120f" name="Default Changelist" comment="" />
->>>>>>> f7d41b4045af4e76d2c72b19b49067a6a1714f79
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
-    <option name="SHOW_DIALOG" value="false" />
-    <option name="HIGHLIGHT_CONFLICTS" value="true" />
-    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
-    <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-<<<<<<< HEAD
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="156" />
-    <option name="y" value="67" />
-    <option name="width" value="1390" />
-    <option name="height" value="756" />
-=======
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="67" />
+  <component name="ProjectFrameBounds" extendedState="7">
+    <option name="x" value="712" />
     <option name="y" value="27" />
-    <option name="width" value="1373" />
-    <option name="height" value="873" />
->>>>>>> f7d41b4045af4e76d2c72b19b49067a6a1714f79
-  </component>
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-<<<<<<< HEAD
-              <item name="csye6225-spring2019-master" type="b2602c69:ProjectViewProjectNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="csye6225-spring2019-master" type="b2602c69:ProjectViewProjectNode" />
-=======
-              <item name="csye6225-spring2019" type="b2602c69:ProjectViewProjectNode" />
-              <item name="csye6225-spring2019" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="csye6225-spring2019" type="b2602c69:ProjectViewProjectNode" />
-              <item name="csye6225-spring2019" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="csye6225-spring2019" type="b2602c69:ProjectViewProjectNode" />
-              <item name="csye6225-spring2019" type="462c0819:PsiDirectoryNode" />
->>>>>>> f7d41b4045af4e76d2c72b19b49067a6a1714f79
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="csye6225" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-<<<<<<< HEAD
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
-=======
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
->>>>>>> f7d41b4045af4e76d2c72b19b49067a6a1714f79
-    </panes>
+    <option name="width" value="620" />
+    <option name="height" value="741" />
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-<<<<<<< HEAD
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1549407469839" />
-=======
->>>>>>> f7d41b4045af4e76d2c72b19b49067a6a1714f79
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1550782702005" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
-  <component name="SvnConfiguration">
-    <configuration />
-  </component>
-  <component name="TaskManager">
-    <task active="true" id="Default" summary="Default task">
-<<<<<<< HEAD
-      <changelist id="f244c077-fa36-4b13-b7bc-9d0e15480b2b" name="Default Changelist" comment="" />
-      <created>1549407412016</created>
-      <option name="number" value="Default" />
-      <option name="presentableId" value="Default" />
-      <updated>1549407412016</updated>
-      <workItem from="1549407413662" duration="61000" />
-=======
-      <changelist id="3a4a20e9-77fd-4660-adb5-d0323736120f" name="Default Changelist" comment="" />
-      <created>1549405926415</created>
-      <option name="number" value="Default" />
-      <option name="presentableId" value="Default" />
-      <updated>1549405926415</updated>
-      <workItem from="1549405931012" duration="32000" />
->>>>>>> f7d41b4045af4e76d2c72b19b49067a6a1714f79
-    </task>
-    <servers />
-  </component>
-  <component name="TimeTrackingManager">
-<<<<<<< HEAD
-    <option name="totallyTimeSpent" value="61000" />
-  </component>
-  <component name="ToolWindowManager">
-    <frame x="0" y="25" width="1718" height="798" extended-state="6" />
-=======
-    <option name="totallyTimeSpent" value="32000" />
-  </component>
-  <component name="ToolWindowManager">
-    <frame x="67" y="27" width="1373" height="873" extended-state="6" />
->>>>>>> f7d41b4045af4e76d2c72b19b49067a6a1714f79
-    <layout>
-      <window_info id="Image Layers" />
-      <window_info id="Designer" />
-      <window_info id="UI Designer" />
-      <window_info id="Capture Tool" />
-      <window_info id="Favorites" side_tool="true" />
-<<<<<<< HEAD
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20095694" />
-=======
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24943651" />
->>>>>>> f7d41b4045af4e76d2c72b19b49067a6a1714f79
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Database Changes" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="right" id="Palette" />
-      <window_info anchor="right" id="Theme Preview" />
-      <window_info anchor="right" id="Maven" />
-      <window_info anchor="right" id="Capture Analysis" />
-      <window_info anchor="right" id="Palette&#9;" />
-      <window_info anchor="right" id="Database" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-    </layout>
-  </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+  <component name="RunManager">
+    <configuration name="Csye6225Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="csye6225" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.csye6225.Csye6225Application" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="masterDetails">
     <states>

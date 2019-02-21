@@ -52,16 +52,19 @@
             <artifactId>android-json</artifactId>
             <version>0.0.20131108.vaadin1</version>
         </dependency>
-<<<<<<< HEAD
-=======
+
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk</artifactId>
+            <version>1.11.501</version>
+        </dependency>
+
         <dependency>
             <groupId>com.vaadin.external.google</groupId>
             <artifactId>android-json</artifactId>
             <version>0.0.20131108.vaadin1</version>
         </dependency>
->>>>>>> f7d41b4045af4e76d2c72b19b49067a6a1714f79
     </dependencies>
-
 
     <build>
         <plugins>
@@ -72,8 +75,4 @@
         </plugins>
     </build>
 
-<<<<<<< HEAD
 </project>
-=======
-</project>
->>>>>>> f7d41b4045af4e76d2c72b19b49067a6a1714f79

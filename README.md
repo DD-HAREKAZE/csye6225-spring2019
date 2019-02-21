@@ -11,8 +11,11 @@
 
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
 
 >>>>>>> f7d41b4045af4e76d2c72b19b49067a6a1714f79
+>>>>>>> 575fda13117621695e2bf7bad0652ae2222c229f
 ## Technology Stack
 VMWare Workstation15 (provided by NEU software center)
 VM OS: Unbuntu 16.04
