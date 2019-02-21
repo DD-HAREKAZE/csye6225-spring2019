@@ -13,7 +13,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-//@athur yifu xu
+//@athur yifu xu (and his bucket)
 //test: put something local to AWS S3
 public class uploadAMZ {
 
