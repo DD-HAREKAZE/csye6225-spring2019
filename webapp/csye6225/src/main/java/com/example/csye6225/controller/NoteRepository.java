@@ -9,7 +9,7 @@ import java.util.List;
 // This will be AUTO IMPLEMENTED by Spring into a Bean called noteRepository
 // CRUD refers Create, Read, Update, Delete
 
-public interface NoteRepository extends JpaRepository<Note, Integer> {
+public interface NoteRepository extends JpaRepository<Note, String> {
 
     List<Note> findByUserID(int userID);
 }

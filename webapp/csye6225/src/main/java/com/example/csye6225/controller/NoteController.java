@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import java.util.Base64;
 import java.util.List;
@@ -57,12 +55,12 @@ public class NoteController {
                             j.addProperty("last_updated_on", n.getLast_updated_on());
                             jsonObject.add(String.valueOf(i), j);
                         } else {
-                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                             jsonObject.addProperty("message", "401:Unauthorized");
                         }
                         i++;
                     }
-                    response.setStatus(200);
+                    response.setStatus(HttpServletResponse.SC_OK);
                     return jsonObject.toString();
 
                 } else {
@@ -74,8 +72,8 @@ public class NoteController {
 
             } else {
 
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                jsonObject.addProperty("message", "400:Bad Request");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                jsonObject.addProperty("message", "401:Unauthorized");
 
             }
         } else {
@@ -96,7 +94,7 @@ public class NoteController {
 
         JsonObject jsonObject = new JsonObject();
 
-        int noteID = Integer.parseInt(request.getRequestURI().split("/")[2]);
+        String noteID = request.getRequestURI().split("/")[2];
 
         String header = request.getHeader("Authorization");
         if (header != null) {
@@ -114,10 +112,10 @@ public class NoteController {
                         jsonObject.addProperty("title", note.getTitle());
                         jsonObject.addProperty("created_on", note.getCreated_on());
                         jsonObject.addProperty("last_updated_on", note.getLast_updated_on());
-                        response.setStatus(200);
+                        response.setStatus(HttpServletResponse.SC_OK);
                         return jsonObject.toString();
                     } else {
-                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         jsonObject.addProperty("message", "401:Unauthorized");
                     }
                 } else {
@@ -127,8 +125,8 @@ public class NoteController {
                 }
 
             } else {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                jsonObject.addProperty("message", "400:Bad Request");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                jsonObject.addProperty("message", "401:Unauthorized");
 
             }
         } else {
@@ -145,10 +143,10 @@ public class NoteController {
 
     @RequestMapping(value = "/note", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public String addNote(@RequestBody Note n, HttpServletRequest request, HttpServletResponse response) {
+    public String addNote(@RequestBody Note note, HttpServletRequest request, HttpServletResponse response) {
         JsonObject jsonObject = new JsonObject();
 
-        if (n.getContent().length() < 4096) {
+        if (note.getContent().length() < 4096) {
             String header = request.getHeader("Authorization");
             if (header != null) {
 
@@ -156,14 +154,14 @@ public class NoteController {
                 userID = GetUserDetails(header);
                 if (userID > -1) {
 
-                    Note note = new Note();
                     note.setUserID(userID);
-                    if (n.getTitle()!=null && n.getContent()!=null){
-                        note.setTitle(n.getTitle());
-                        note.setContent(n.getContent());
+                    if (note.getTitle() != null && note.getContent() != null) {
+
                         Date now = new Date();
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         String hehe = dateFormat.format(now);
+                        System.out.println(hehe);
+                        System.out.println(request.getHeaders("date"));
                         note.setCreated_on(hehe);
                         note.setLast_updated_on(hehe);
 
@@ -174,16 +172,17 @@ public class NoteController {
                         jsonObject.addProperty("title", note.getTitle());
                         jsonObject.addProperty("created_on", note.getCreated_on());
                         jsonObject.addProperty("last_updated_on", note.getLast_updated_on());
-                        response.setStatus(201);
+                        response.setStatus(HttpServletResponse.SC_CREATED);
                         return jsonObject.toString();
-                    }else {
-                        response.setStatus(204);
-                        jsonObject.addProperty("message","204:No Content");
+
+                    } else {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                        jsonObject.addProperty("message", "400:Bad Request");
                     }
 
                 } else {
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    jsonObject.addProperty("message", "400:Bad Request");
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    jsonObject.addProperty("message", "401:Unauthorized");
 
                 }
             } else {
@@ -205,7 +204,7 @@ public class NoteController {
 
         JsonObject jsonObject = new JsonObject();
 
-        int noteID = Integer.parseInt(request.getRequestURI().split("/")[2]);
+        String noteID = request.getRequestURI().split("/")[2];
 
         String header = request.getHeader("Authorization");
         if (header != null) {
@@ -213,8 +212,8 @@ public class NoteController {
             int userID = GetUserDetails(header);
 
             if (userID > -1) {
-
-                Note note = noteRepository.findById(noteID).get();
+                Optional<Note> t = noteRepository.findById(noteID);
+                Note note = t.isPresent() ? t.get() : null;
                 if (note != null) {
                     if (note.getUserID() == userID) {
                         if (n.getTitle() != null) note.setTitle(n.getTitle());
@@ -224,12 +223,11 @@ public class NoteController {
                         String hehe = dateFormat.format(now);
                         note.setLast_updated_on(hehe);
                         noteRepository.save(note);
-                        response.setStatus(200);
-                        jsonObject.addProperty("message", "200:OK");
+                        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
                         return jsonObject.toString();
                     } else {
-                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         jsonObject.addProperty("message", "401:Unauthorized");
                     }
                 } else {
@@ -238,8 +236,8 @@ public class NoteController {
                 }
 
             } else {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                jsonObject.addProperty("message", "400:Bad Request");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                jsonObject.addProperty("message", "401:Unauthorized");
             }
         } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -257,34 +255,34 @@ public class NoteController {
     String deleteNote(HttpServletRequest request, HttpServletResponse response) {
 
         JsonObject jsonObject = new JsonObject();
-        int noteID = Integer.parseInt(request.getRequestURI().split("/")[2]);
+        String noteID = request.getRequestURI().split("/")[2];
         String header = request.getHeader("Authorization");
         if (header != null) {
 
             int userID = GetUserDetails(header);
 
             if (userID > -1) {
-
-                Note note = noteRepository.findById(noteID).get();
+                Optional<Note> t = noteRepository.findById(noteID);
+                Note note = t.isPresent() ? t.get() : null;
                 if (note != null) {
                     if (note.getUserID() == userID) {
                         noteRepository.delete(note);
-                        response.setStatus(200);
-                        jsonObject.addProperty("message", "200:OK");
+                        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                         return jsonObject.toString();
                     } else {
-                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         jsonObject.addProperty("message", "401:Unauthorized");
                     }
 
                 } else {
+                    System.out.println("notfound");
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     jsonObject.addProperty("message", "404:Not Found");
                 }
 
             } else {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                jsonObject.addProperty("message", "400:Bad Request");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                jsonObject.addProperty("message", "401:Unauthorized");
             }
         } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
