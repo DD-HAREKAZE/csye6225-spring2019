@@ -1,8 +1,5 @@
-
 package com.example.csye6225.controller;
 
-
-import com.example.csye6225.Note;
 import com.example.csye6225.User;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -68,9 +65,6 @@ public class UserController {
 
         return s;
     }
-
-
-
 
     //check if a username is an email address or not
     public static boolean isEmail(String string) {
@@ -164,10 +158,6 @@ public class UserController {
             String p=jsonObject.toString();
             return p;
         }
-
-
-
-
 
         for(User singleRecord:a){
             if(singleRecord.getName().equals(username)){code=1;}
