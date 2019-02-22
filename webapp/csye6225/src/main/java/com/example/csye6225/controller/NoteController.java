@@ -175,7 +175,7 @@ public class NoteController {
 
     @RequestMapping(value = "/note", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    String postNote(@RequestParam("file") MultipartFile file, @RequestParam String title, @RequestParam String content, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String postNote(@RequestParam MultipartFile file, @RequestParam String title, @RequestParam String content, HttpServletRequest request, HttpServletResponse response) throws IOException {
         JsonObject jsonObject = new JsonObject();
 
         if (content.length() < 4096) {
@@ -244,7 +244,7 @@ public class NoteController {
 
     @RequestMapping(value = "/note/{id}", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
-    String updateNote(@RequestParam("file") MultipartFile file, @RequestParam String title, @RequestParam String content, HttpServletRequest request, HttpServletResponse response) {
+    String updateNote(@RequestParam MultipartFile file, @RequestParam String title, @RequestParam String content, HttpServletRequest request, HttpServletResponse response) {
 
         JsonObject jsonObject = new JsonObject();
 
@@ -260,15 +260,33 @@ public class NoteController {
                 Note note = t.isPresent() ? t.get() : null;
                 if (note != null) {
                     if (note.getUserID() == userID) {
-                        if (title != null) note.setTitle(title);
-                        if (content!= null) note.setContent(content);
+
+
+
+                        note.setTitle(title);
+                        note.setContent(content);
                         Date now = new Date();
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         String hehe = dateFormat.format(now);
                         note.setLast_updated_on(hehe);
                         noteRepository.save(note);
-                        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
+                        List<FilePath> filePath = filePathRepository.findByNoteID(noteID);
+                        if(!filePath.isEmpty()) {
+                            for(FilePath f: filePath) {
+                                filePathService.delete(f.getFilename());
+                                filePathRepository.delete(f);
+                            }
+                        }
+
+
+                        FilePath f = new FilePath();
+                        f.setFilename(file.getOriginalFilename());
+                        f.setNoteID(noteID);
+                        f.setPath(filePathService.Upload(file));
+                        filePathRepository.save(f);
+
+                        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
                         return jsonObject.toString();
                     } else {
@@ -310,9 +328,19 @@ public class NoteController {
                 Note note = t.isPresent() ? t.get() : null;
                 if (note != null) {
                     if (note.getUserID() == userID) {
+
+                        List<FilePath> filePath = filePathRepository.findByNoteID(noteID);
+                        if(!filePath.isEmpty()) {
+                            for(FilePath f: filePath) {
+                                filePathService.delete(f.getFilename());
+                                filePathRepository.delete(f);
+                            }
+                        }
                         noteRepository.delete(note);
                         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                         return jsonObject.toString();
+
+
                     } else {
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         jsonObject.addProperty("message", "401:Unauthorized");
