@@ -61,7 +61,7 @@ public class FileController {
                 if (note != null) {
                     if (note.getUserID() == userID) {
                         List<FilePath> filePath = filePathRepository.findByNoteID(noteID);
-                        if(!filePath.isEmpty()) {
+                        if (!filePath.isEmpty()) {
                             for (FilePath f : filePath) {
 
                                 JsonObject j = new JsonObject();
@@ -72,8 +72,7 @@ public class FileController {
                             }
                             response.setStatus(HttpServletResponse.SC_OK);
                             return jsonArray.toString();
-                        }
-                        else {
+                        } else {
                             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                             jsonObject.addProperty("message", "404:Not Found");
                         }
@@ -108,7 +107,7 @@ public class FileController {
     //POST
     @RequestMapping(value = "/note/{idNotes}/attachments", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public String postAttachments(@RequestParam MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public String postAttachments(@RequestParam MultipartFile[] file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         JsonObject jsonObject = new JsonObject();
 
@@ -125,16 +124,21 @@ public class FileController {
                 if (note != null) {
                     if (note.getUserID() == userID) {
 
-                        FilePath filePath = new FilePath();
-                        filePath.setNoteID(noteID);
-                        filePath.setFilename(file.getOriginalFilename());
-                        filePath.setPath(filePathService.Upload(file));
-                        filePathRepository.save(filePath);
+                        JsonArray jsonArray = new JsonArray();
+                        for (MultipartFile f : file) {
+                            FilePath filePath = new FilePath();
+                            filePath.setNoteID(noteID);
+                            filePath.setFilename(f.getOriginalFilename());
+                            filePath.setPath(filePathService.Upload(f));
+                            filePathRepository.save(filePath);
+                            JsonObject j = new JsonObject();
+                            j.addProperty("id", filePath.getID());
+                            j.addProperty("url", filePath.getPath());
+                            jsonArray.add(j);
+                        }
 
-                        jsonObject.addProperty("id", filePath.getID());
-                        jsonObject.addProperty("url", filePath.getPath());
                         response.setStatus(HttpServletResponse.SC_OK);
-                        return jsonObject.toString();
+                        return jsonArray.toString();
                     } else {
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         jsonObject.addProperty("message", "401:Unauthorized");
@@ -161,7 +165,7 @@ public class FileController {
     //PUT
     @RequestMapping(value = "/note/{idNotes}/attachments/{idAttachments}", method = RequestMethod.PUT, produces = "application/json")
     @ResponseBody
-    public String updateAttachments(@RequestParam MultipartFile file,HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public String updateAttachments(@RequestParam MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         JsonObject jsonObject = new JsonObject();
 
@@ -179,10 +183,10 @@ public class FileController {
                 if (note != null) {
                     if (note.getUserID() == userID) {
 
-                        Optional<FilePath> of =filePathRepository.findById(fileID);
-                        FilePath filePath= of.isPresent() ? of.get() : null;
-                        if(filePath!=null) {
-                            if(filePath.getNoteID().equals(noteID)) {
+                        Optional<FilePath> of = filePathRepository.findById(fileID);
+                        FilePath filePath = of.isPresent() ? of.get() : null;
+                        if (filePath != null) {
+                            if (filePath.getNoteID().equals(noteID)) {
 
                                 filePathService.delete(filePath.getFilename());
                                 filePath.setFilename(file.getOriginalFilename());
@@ -192,20 +196,14 @@ public class FileController {
                                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                                 return jsonObject.toString();
 
-                            }else {
+                            } else {
                                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                                 jsonObject.addProperty("message", "401:Unauthorized");
                             }
-                        }else {
+                        } else {
                             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                             jsonObject.addProperty("message", "404:Not Found");
                         }
-
-
-
-
-
-
 
 
                         FilePath filePathPut = new FilePath();
@@ -260,10 +258,10 @@ public class FileController {
                 Note note = on.isPresent() ? on.get() : null;
                 if (note != null) {
                     if (note.getUserID() == userID) {
-                        Optional<FilePath> of =filePathRepository.findById(fileID);
-                        FilePath filePath= of.isPresent() ? of.get() : null;
-                        if(filePath!=null) {
-                            if(filePath.getNoteID().equals(noteID)) {
+                        Optional<FilePath> of = filePathRepository.findById(fileID);
+                        FilePath filePath = of.isPresent() ? of.get() : null;
+                        if (filePath != null) {
+                            if (filePath.getNoteID().equals(noteID)) {
 
                                 System.out.println(filePath.getFilename());
                                 filePathService.delete(filePath.getFilename());
@@ -272,11 +270,11 @@ public class FileController {
                                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                                 return jsonObject.toString();
 
-                            }else {
+                            } else {
                                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                                 jsonObject.addProperty("message", "401:Unauthorized");
                             }
-                        }else {
+                        } else {
                             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                             jsonObject.addProperty("message", "404:Not Found");
                         }
@@ -303,7 +301,6 @@ public class FileController {
         return jsonObject.toString();
 
     }
-
 
 
     public int GetUserDetails(String header) {

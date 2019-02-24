@@ -175,7 +175,7 @@ public class NoteController {
 
     @RequestMapping(value = "/note", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    String postNote(@RequestParam MultipartFile file, @RequestParam String title, @RequestParam String content, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String postNote(@RequestParam(required = false) MultipartFile[] file, @RequestParam String title, @RequestParam String content, HttpServletRequest request, HttpServletResponse response) throws IOException {
         JsonObject jsonObject = new JsonObject();
 
         if (content.length() < 4096) {
@@ -199,24 +199,33 @@ public class NoteController {
                         note.setLast_updated_on(hehe);
                         noteRepository.save(note);
 
-                        FilePath filePath = new FilePath();
-                        filePath.setNoteID(note.getID());
-                        filePath.setPath(filePathService.Upload(file));
-                        filePath.setFilename(file.getOriginalFilename());
-                        filePathRepository.save(filePath);
-
                         jsonObject.addProperty("id", note.getID());
                         jsonObject.addProperty("content", note.getContent());
                         jsonObject.addProperty("title", note.getTitle());
                         jsonObject.addProperty("created_on", note.getCreated_on());
                         jsonObject.addProperty("last_updated_on", note.getLast_updated_on());
+
                         JsonArray jsonArray = new JsonArray();
-                        JsonObject j = new JsonObject();
-                        j.addProperty("id", filePath.getID());
-                        j.addProperty("url", filePath.getPath());
+                        if(file!=null) {
+
+                            for(MultipartFile f :file) {
+                                FilePath filePath = new FilePath();
+                                filePath.setNoteID(note.getID());
+                                filePath.setPath(filePathService.Upload(f));
+                                filePath.setFilename(f.getOriginalFilename());
+                                filePathRepository.save(filePath);
+
+                                JsonObject j = new JsonObject();
+                                j.addProperty("id", filePath.getID());
+                                j.addProperty("url", filePath.getPath());
+
+                                jsonArray.add(j);
+
+                            }
+                        }
                         response.setStatus(HttpServletResponse.SC_CREATED);
-                        jsonArray.add(j);
                         jsonObject.add("attachments",jsonArray);
+
                         return jsonObject.toString();
 
                     } else {
@@ -244,7 +253,7 @@ public class NoteController {
 
     @RequestMapping(value = "/note/{id}", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
-    String updateNote(@RequestParam MultipartFile file, @RequestParam String title, @RequestParam String content, HttpServletRequest request, HttpServletResponse response) {
+    String updateNote(@RequestParam(required = false) MultipartFile[] file, @RequestParam String title, @RequestParam String content, HttpServletRequest request, HttpServletResponse response) {
 
         JsonObject jsonObject = new JsonObject();
 
@@ -260,8 +269,6 @@ public class NoteController {
                 Note note = t.isPresent() ? t.get() : null;
                 if (note != null) {
                     if (note.getUserID() == userID) {
-
-
 
                         note.setTitle(title);
                         note.setContent(content);
@@ -279,15 +286,18 @@ public class NoteController {
                             }
                         }
 
+                        if(file!=null) {
 
-                        FilePath f = new FilePath();
-                        f.setFilename(file.getOriginalFilename());
-                        f.setNoteID(noteID);
-                        f.setPath(filePathService.Upload(file));
-                        filePathRepository.save(f);
+                            for(MultipartFile f:file) {
+                                FilePath filePath1 = new FilePath();
+                                filePath1.setFilename(f.getOriginalFilename());
+                                filePath1.setNoteID(noteID);
+                                filePath1.setPath(filePathService.Upload(f));
+                                filePathRepository.save(filePath1);
+                            }
+                        }
 
                         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-
                         return jsonObject.toString();
                     } else {
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
