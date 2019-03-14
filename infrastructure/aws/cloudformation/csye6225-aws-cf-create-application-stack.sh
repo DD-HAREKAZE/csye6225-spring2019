@@ -2,9 +2,6 @@
 
 echo "Enter your stack name [ENTER]: "
 read stack
-echo "Displaying AMI!"
-aws ec2 describe-images --owners self --query 'Images[*].{ID:ImageId}'
-echo -e "\n"
 echo "Enter your ami id [ENTER]: "
 read ImageId
 # ImageId=ami-0f2b4fc905b0bd1f1
