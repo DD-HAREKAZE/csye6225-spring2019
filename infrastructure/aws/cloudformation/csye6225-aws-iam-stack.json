@@ -23,7 +23,6 @@
               "Action": [
                 "s3:PutObject"
               ],
-              "Effect": "Allow",
               "Resource": [
                 "arn:aws:s3:::code-deploy.csye6225-spring2019-zhaojiawe.me.tld"
               ]
@@ -120,7 +119,6 @@
                 "ec2:StopInstances",
                 "ec2:TerminateInstances"
               ],
-              "Effect": "Allow",
               "Resource": "*"
             }
           ]
@@ -141,7 +139,6 @@
                 "s3:Get*",
                 "s3:List*"
               ],
-              "Effect": "Allow",
               "Resource": [
                 "arn:aws:s3:::code-deploy.csye6225-spring2019-zhaojiawe.me.tld"
               ]
@@ -156,3 +153,4 @@
 
 
 }
+
