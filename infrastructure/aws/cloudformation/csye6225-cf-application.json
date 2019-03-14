@@ -6,7 +6,7 @@
        },
        "AmiId":{
          "Type":"String"
-       },
+       }
     },
     "Resources": {
         "ec2instance": {
@@ -17,7 +17,7 @@
                 "KeyName": {
                     "Ref": "keyname"
                 },
-                "SubnetId" :{"Fn::ImportValue":"csye6225-cloud-Networking-web-subnet"},
+		 "SubnetId" : {"Fn::ImportValue" : {"Fn::Sub" : "csye6225-cloud-Networking-web-subnet"}},
                 "SecurityGroupIds": [
                     {
                         "Ref": "webappsecuritygroup"
@@ -39,14 +39,14 @@
             "Type":"AWS::RDS::DBSubnetGroup",
             "Properties":{
                 "DBSubnetGroupDescription" : "Subnet description of db subnets",
-                "SubnetIds":[{"Fn::ImportValue":"csye6225-cloud-Networking-db-subnet1Id"},
-                  {"Fn::ImportValue":"csye6225-cloud-Networking-db-subnet2Id"}]
+		"SubnetIds":[{"Fn::ImportValue":{"Fn::Sub":"csye6225-cloud-Networking-db-subnet1Id"}},
+                  {"Fn::ImportValue":{"Fn::Sub":"csye6225-cloud-Networking-db-subnet2Id"}}]
             }
         },
         "webappsecuritygroup": {
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
-                "VpcId":{"Fn::ImportValue":"csye6225-cloud-Networking-VPC-Id"},
+                "VpcId":{"Fn::ImportValue":{"Fn::Sub":"csye6225-cloud-Networking-VPC-Id"}},
                 "GroupDescription" : "Security group for web server",
                 "SecurityGroupIngress": [
                     {
@@ -73,7 +73,7 @@
         "dbsecuritygroup": {
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
-                "VpcId":{"Fn::ImportValue":"csye6225-cloud-Networking-VPC-Id"},
+                "VpcId":{"Fn::ImportValue":{"Fn::Sub":"csye6225-cloud-Networking-VPC-Id"}},
                 "GroupDescription" : "Ec2 security group for DB",
                 "SecurityGroupIngress": [
                     {
