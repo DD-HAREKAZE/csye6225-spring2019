@@ -8,7 +8,7 @@ read username
 # ImageId=ami-0f2b4fc905b0bd1f1
 # ImageId=ami-02eac2c0129f6376b
 
-aws cloudformation create-stack --stack-name ${stack} --template-body file://../cloudformation/csye6225-iam-application.json  --parameters ParameterKey=circleni,ParameterValue=circleci
+aws cloudformation create-stack --stack-name ${stack} --template-body file://../cloudformation/csye6225-aws-iam-stack.json  --parameters ParameterKey=circleci,ParameterValue=circleci --capabilities='CAPABILITY_NAMED_IAM'
 i=1
 sp="/-\|"
 while true
@@ -23,3 +23,4 @@ else
   echo "Stack ${stack} create failed!"
 fi
 kill $! && trap " " EXIT
+
