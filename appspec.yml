@@ -1,0 +1,14 @@
+version: 0.0
+os: linux
+
+files:
+  - source: ./appspec.yml
+    destination: /home/centos
+  - source: ./webapp/build/libs/csye6225-0.0.1-SNAPSHOT.jar
+    destination: /var/lib/tomcat8/webapps
+
+hooks:
+  AfterInstall:
+    - location: ./afterInstall.sh
+      timeout: 180
+    runas: centos
