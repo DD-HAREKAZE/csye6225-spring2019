@@ -236,21 +236,33 @@
         }
     },
     "Outputs": {
-        "MyStacksRegion" : { "Value" : { "Ref" : "AWS::Region" },"Export":{"Name":"csye6225"}},
-
-        "VPCId":{ "Value" : { "Ref" : "VPC" }, "Export":{"Name":"csye6225-cloud-Networking-VPC-Id"} },
-
-        "InternetGatewaySId" : { "Value" : { "Ref" : "InternetGateway" } },
-
-        "PublicRoutetable" : { "Value" : { "Ref" : "PublicRouteTable" } },
-
-	    "publicsubnet1":{"Value" : { "Ref" : "publicsubnet1" },"Export":{"Name":"csye6225-cloud-Networking-db-subnet1Id"} },
-
-        "publicsubnet2":{"Value" : { "Ref" : "publicsubnet2" },"Export":{"Name":"csye6225-cloud-Networking-db-subnet2Id"} },
-
-	    "publicsubnet3":{"Value" : { "Ref" : "publicsubnet3" },"Export":{"Name":"csye6225-cloud-Networking-web-subnet"} }
-
-	}
+        "websubnet":{
+            "Value":{"Ref":"publicsubnet1"},
+            "Export":{
+            "Name":"csye6225-cloud-Networking-web-subnet"
+            }
+        },
+        "dbsubnet1Id":{
+            "Value":{"Ref":"publicsubnet2"},
+            "Export":{
+            "Name":"csye6225-cloud-Networking-db-subnet1Id"
+            }
+        },
+        "dbsubnet2Id":{
+            "Value":{"Ref":"publicsubnet3"},
+            "Export":{
+            "Name":"csye6225-cloud-Networking-db-subnet2Id"
+            }
+        },
+        "vpcid":{
+            "Value":{"Ref":"VPC"},
+            "Export":{
+            "Name":"csye6225-cloud-Networking-VPC-Id"
+            }
+          }
+    }
 }
 
+        
+    
 
