@@ -1,8 +1,8 @@
+
 aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE||CREATE_IN_PROGRESS||REVIEW_IN_PROGRESS||DELETE_IN_PROGRESS||DELETE_FAILED||UPDATE_IN_PROGRESS||DELETE_COMPLETE
 
-echo "Enter the stack you want to create"
+echo "Enter the stack name you would wish to create..."
 read Stack_Name
-
 
 
 
@@ -12,12 +12,14 @@ echo -e "\n"
 echo "Choose 1 Key which you want to use!"
 read KEY_CHOSEN
 
-echo "Displaying AMI!"
+echo "Displaying the AMI!"
 aws ec2 describe-images --owners self --query 'Images[*].{ID:ImageId}'
 echo -e "\n"
 echo "Enter AMI ID"
 read amiId
 
+echo "Enter Bucket Name for Attachment Upload"
+read uploadbucket
 
 
 getStackStatus() {
@@ -26,8 +28,6 @@ getStackStatus() {
 		--query Stacks[].StackStatus \
 		--output text
 }
-
-
 
 waitForState() {
 	local status
@@ -57,17 +57,17 @@ exitWithErrorMessage() {
 	exit 1
 }
 
-
 dir_var=$(pwd)
-# echo "Current Directory is '$dir_var'"
-file_dir_var="file://$dir_var/csye6225-cf-application.json"
+
+file_dir_var="file://$dir_var/application.json"
 
 
 aws cloudformation create-stack \
 	--stack-name $Stack_Name  \
 	--template-body $file_dir_var \
-	--parameters ParameterKey="keyname",ParameterValue=$KEY_CHOSEN ParameterKey="AmiId",ParameterValue=$amiId \
+	--parameters ParameterKey="keyname",ParameterValue=$KEY_CHOSEN ParameterKey="AmiId",ParameterValue=$amiId ParameterKey="NameTag",ParameterValue="ec2" ParameterKey="webappbucket",ParameterValue="$uploadbucket" \
 	--disable-rollback
+
 
 
 if ! [ "$?" = "0" ]; then
@@ -76,5 +76,5 @@ if ! [ "$?" = "0" ]; then
 
 fi
 
-#Wait for completion
+
 waitForState ${Stack_Name} "CREATE_COMPLETE"

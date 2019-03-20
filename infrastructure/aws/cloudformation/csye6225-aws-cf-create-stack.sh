@@ -1,12 +1,4 @@
-<<<<<<< HEAD
-echo "Enter the stack name to create"
-read stackname
-echo $stackname
-aws cloudformation create-stack --stack-name $stackname --template-body file://create.yaml
-=======
-#aws cloudformation create-stack --stack-name csye6225-Vpc --template-body file://create.yaml
-
-echo "Enter the detail of the stack creation"
+echo "Enter the stack name to be created"
 read sName
 
 	mVPCSubnetCidrBlock=10.0.0.0/16
@@ -19,7 +11,7 @@ read sName
 	mRouteIpaddress=0.0.0.0/0
 	StackName=$sName
 
-	echo "$sName Stack creation is in progress. Please wait..."
+	echo "$sName Stack creation in progress..."
 
 	stackID=$(aws cloudformation create-stack --stack-name $sName --template-body file://csye6225-cf-networking.json --parameters ParameterKey=VPCSubnetCidrBlock,ParameterValue=$mVPCSubnetCidrBlock ParameterKey=AvailabilityZone1,ParameterValue=$mAvailabilityZone1 ParameterKey=AvailabilityZone2,ParameterValue=$mAvailabilityZone2 ParameterKey=AvailabilityZone3,ParameterValue=$mAvailabilityZone3 ParameterKey=PublicSubnetCidrBlock1,ParameterValue=$mSubnetCidrBlock1 ParameterKey=PublicSubnetCidrBlock2,ParameterValue=$mSubnetCidrBlock2 ParameterKey=PublicSubnetCidrBlock3,ParameterValue=$mSubnetCidrBlock3 ParameterKey=RouteIpaddress,ParameterValue=$mRouteIpaddress ParameterKey=StackName,ParameterValue=$StackName --query [StackId] --output text)
 	aws cloudformation wait stack-create-complete --stack-name $stackID
@@ -27,9 +19,8 @@ read sName
 	echo $stackID
 
 	if [ -z $stackID ]; then
-		echo 'Error Occured. Stack Creation Unsuccessful. Please try again !!!'
+		echo 'Error. Stack creation failed !!!'
 		exit 1
 	else
-		echo "Stack Creation Successfull !!!"
+		echo "Stack Creation Done !!!"
 	fi
->>>>>>> f7d41b4045af4e76d2c72b19b49067a6a1714f79

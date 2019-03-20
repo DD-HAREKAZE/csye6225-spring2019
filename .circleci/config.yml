@@ -3,6 +3,7 @@ jobs:
   build:
     docker:
       - image: circleci/openjdk:8-jdk
+
     steps:
       - checkout
 
@@ -10,18 +11,19 @@ jobs:
           name: Install packages
           command: sudo apt-get update && sudo apt-get install wget zip unzip python2.7 python-pip -y
 
-
       - run:
           name: Install awscli
-          command: sudo pip install awscli
+          command: |
+            sudo pip install awscli
+            aws configure set default.region us-east-1
 
       - run:
           name: Build Artifact
           command: |
-            cd webapp/csye6225
+            cd webapp
             pwd
             ls -al
-            mvn clean package -DskipTests
+            mvn clean install
             cd target/
             ls -al
             cd ../
@@ -30,12 +32,16 @@ jobs:
       - run:
           name: Zip Artifact
           command: |
-            echo "Hello the current build number is ${CIRCLE_BUILD_NUM}"
+            echo "current build number is ${CIRCLE_BUILD_NUM}"
             pwd
             mkdir -p codedeploy_artifact
-            zip -r csye6225-web-app-${CIRCLE_BUILD_NUM}.zip webapp/csye6225/target/csye6225-0.0.1-SNAPSHOT.jar *.sh *.yml *sql
-            mv csye6225-web-app-${CIRCLE_BUILD_NUM}.zip codedeploy_artifact/
             cd codedeploy_artifact
+            cp ../infrastructure/aws/codedeploy/*.sh .
+            cp ../*.yml .
+            cp ../webapp/target/webApp-0.0.1-SNAPSHOT.jar .
+            cp ../webapp/src/main/resources/*.properties .
+            zip -r csye6225-web-app-${CIRCLE_BUILD_NUM}.zip .
+            rm *.yml *.sh *.properties *.jar
             ls -al
             pwd
             cd ..
@@ -44,12 +50,8 @@ jobs:
       - run:
           name: Upload Artifact to S3
           command: |
-            aws s3 sync codedeploy_artifact s3://code-deploy.csye6225-spring2019-zhaojiawe.me.tld --region us-east-1
+            aws s3 cp --recursive codedeploy_artifact s3://${CODE_DEPLOY_S3_BUCKET}
       - run:
           name: Make CodeDeploy API call
           command: |
-            echo "Hello CodeDeploy"
-      - run:
-           name: Deploy
-           command: |
-            aws deploy create-deployment --region us-east-1 --application-name csye6225-webapp --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name csye6225-webapp-deployment --description "csye6225 create" --s3-location bucket=code-deploy.csye6225-spring2019-${BUCKET_NAME}.me,bundleType=zip,key=csye6225-web-app-${CIRCLE_BUILD_NUM}.zip
+            aws deploy create-deployment --output json --application-name csye6225-webapp --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name csye6225-webapp-deployment --s3-location bucket=${CODE_DEPLOY_S3_BUCKET},bundleType=zip,key=csye6225-web-app-${CIRCLE_BUILD_NUM}.zip
