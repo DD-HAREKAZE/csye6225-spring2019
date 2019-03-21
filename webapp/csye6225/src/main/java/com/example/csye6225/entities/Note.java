@@ -1,4 +1,4 @@
-package com.example.csye6225;
+package com.example.csye6225.entities;
 
 import org.hibernate.annotations.GenericGenerator;
 
