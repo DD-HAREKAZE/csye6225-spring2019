@@ -143,7 +143,7 @@ public class registerController {
 		return Ctime.getCurrentTime();
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/note")
+	@RequestMapping(method = RequestMethod.POST, value = "/note-Amrith")
 	public ResponseEntity<Note> createNote(@RequestBody Note nt,
 			@RequestHeader(value = "Authorization", defaultValue = "noAuth") String auth) {
 		try {
@@ -164,7 +164,7 @@ public class registerController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/note")
+	@RequestMapping(method = RequestMethod.GET, value = "/note-Amrith")
 	public ResponseEntity<List<Note>> getAllNote(
 			@RequestHeader(value = "Authorization", defaultValue = "noAuth") String auth) {
 		String status = checkAuth(auth);
@@ -174,7 +174,7 @@ public class registerController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/note/{id}")
+	@RequestMapping(method = RequestMethod.GET, value = "/note-Amrith/{id}")
 	public ResponseEntity<Note> getNote(@PathVariable(value = "id") String noteId,
 			@RequestHeader(value = "Authorization", defaultValue = "noAuth") String auth) {
 		try {
@@ -195,7 +195,7 @@ public class registerController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/note/{id}")
+	@RequestMapping(method = RequestMethod.PUT, value = "/note-Amrith/{id}")
 	public ResponseEntity<Note> updateNote(@PathVariable(value = "id") String noteId, @RequestBody Note nt,
 			@RequestHeader(value = "Authorization", defaultValue = "noAuth") String auth) {
 		try {
@@ -235,7 +235,7 @@ public class registerController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/note/{id}")
+	@RequestMapping(method = RequestMethod.DELETE, value = "/note-Amrith/{id}")
 	public ResponseEntity<Note> deleteNote(@PathVariable(value = "id") String noteId,
 			@RequestHeader(value = "Authorization", defaultValue = "noAuth") String auth) {
 		try {
@@ -253,7 +253,7 @@ public class registerController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/note/{id}/attachments")
+	@RequestMapping(method = RequestMethod.POST, value = "/note-Amrith/{id}/attachments")
 	public ResponseEntity<attachment> attach(@PathVariable(value = "id") String noteId,
 			@RequestHeader(value = "Authorization", defaultValue = "noAuth") String auth,
 			@RequestParam("file") MultipartFile file) {
@@ -295,7 +295,7 @@ public class registerController {
 		} 
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/note/{id}/attachments")
+	@RequestMapping(method = RequestMethod.GET, value = "/note-Amrith/{id}/attachments")
 	public ResponseEntity<List<attachment>> getAllNoteAttachments(
 			@RequestHeader(value = "Authorization", defaultValue = "noAuth") String auth,
 			@PathVariable(value = "id") String noteId) {
@@ -306,7 +306,7 @@ public class registerController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/note/{id}/attachments/{idattachments}")
+	@RequestMapping(method = RequestMethod.PUT, value = "/note-Amrith/{id}/attachments/{idattachments}")
 	public ResponseEntity<attachment> updateNoteAttachments(@PathVariable(value = "id") String noteId,
 			@PathVariable(value = "idattachments") String attachmentid,
 			@RequestHeader(value = "Authorization", defaultValue = "noAuth") String auth,
@@ -354,7 +354,7 @@ public class registerController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/note/{id}/attachments/{idattachments}")
+	@RequestMapping(method = RequestMethod.DELETE, value = "/note-Amrith/{id}/attachments/{idattachments}")
 	public ResponseEntity<Note> deleteNoteAttachment(@PathVariable(value = "id") String noteId,
 			@PathVariable(value = "idattachments") String attachmentid,
 			@RequestHeader(value = "Authorization", defaultValue = "noAuth") String auth) {
