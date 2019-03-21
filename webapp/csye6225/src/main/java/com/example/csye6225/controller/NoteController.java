@@ -1,49 +1,52 @@
 package com.example.csye6225.controller;
 
-import com.example.csye6225.FilePath;
-import com.example.csye6225.Note;
-import com.example.csye6225.User;
+import com.example.csye6225.entities.FilePath;
+import com.example.csye6225.entities.Note;
+import com.example.csye6225.dao.FilePathRepository;
+import com.example.csye6225.dao.NoteRepository;
+import com.example.csye6225.dao.UserRepository;
+import com.example.csye6225.helpers.Helper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
-import java.util.Base64;
 import java.util.List;
 
-@Controller    // This means that this class is a Controller
+@RestController    // This means that this class is a Controller
 
 public class NoteController {
-    @Autowired
-    private FilePathService filePathService;
-
-    @Autowired
-    private NoteRepository noteRepository;
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
+    private NoteRepository noteRepository;
+
+    @Autowired
     private FilePathRepository filePathRepository;
 
+    @Autowired
+    private FilePathService filePathService;
+
+    @Autowired
+    private Helper helper;
+
     @RequestMapping(value = "/note", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    String getAllNote(HttpServletRequest request, HttpServletResponse response) {
+    public String getAllNote(HttpServletRequest request, HttpServletResponse response) {
 
         JsonObject jsonObject = new JsonObject();
 
         String header = request.getHeader("Authorization");
         if (header != null) {
 
-            int userID = GetUserDetails(header);
+            int userID = helper.getUserID(header);
 
             if (userID > -1) {
 
@@ -108,8 +111,7 @@ public class NoteController {
     }
 
     @RequestMapping(value = "/note/{id}", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    String getNote(HttpServletRequest request, HttpServletResponse response) {
+    public String getNote(HttpServletRequest request, HttpServletResponse response) {
         JsonObject jsonObject = new JsonObject();
 
         String noteID = request.getRequestURI().split("/")[2];
@@ -117,7 +119,7 @@ public class NoteController {
         String header = request.getHeader("Authorization");
         if (header != null) {
 
-            int userID = GetUserDetails(header);
+            int userID = helper.getUserID(header);
 
             if (userID > -1) {
 
@@ -174,8 +176,7 @@ public class NoteController {
     }
 
     @RequestMapping(value = "/note", method = RequestMethod.POST, produces = "application/json")
-    public @ResponseBody
-    String postNote(@RequestParam(required = false) MultipartFile[] file, @RequestParam String title, @RequestParam String content, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public String postNote(@RequestParam(required = false) MultipartFile[] file, @RequestParam String title, @RequestParam String content, HttpServletRequest request, HttpServletResponse response) throws IOException {
         JsonObject jsonObject = new JsonObject();
 
         if (content.length() < 4096) {
@@ -183,18 +184,16 @@ public class NoteController {
             if (header != null) {
 
                 int userID;
-                userID = GetUserDetails(header);
+                userID = helper.getUserID(header);
                 if (userID > -1) {
 
                     if (title != null && content != null) {
 
-                        Date now = new Date();
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        String hehe = dateFormat.format(now);
                         Note note = new Note();
                         note.setUserID(userID);
                         note.setContent(content);
                         note.setTitle(title);
+                        String hehe = new Date().toString();
                         note.setCreated_on(hehe);
                         note.setLast_updated_on(hehe);
                         noteRepository.save(note);
@@ -206,9 +205,9 @@ public class NoteController {
                         jsonObject.addProperty("last_updated_on", note.getLast_updated_on());
 
                         JsonArray jsonArray = new JsonArray();
-                        if(file!=null) {
+                        if (file != null) {
 
-                            for(MultipartFile f :file) {
+                            for (MultipartFile f : file) {
                                 FilePath filePath = new FilePath();
                                 filePath.setNoteID(note.getID());
                                 filePath.setPath(filePathService.Upload(f));
@@ -224,7 +223,7 @@ public class NoteController {
                             }
                         }
                         response.setStatus(HttpServletResponse.SC_CREATED);
-                        jsonObject.add("attachments",jsonArray);
+                        jsonObject.add("attachments", jsonArray);
 
                         return jsonObject.toString();
 
@@ -252,8 +251,7 @@ public class NoteController {
     }
 
     @RequestMapping(value = "/note/{id}", method = RequestMethod.PUT, produces = "application/json")
-    public @ResponseBody
-    String updateNote(@RequestParam(required = false) MultipartFile[] file, @RequestParam String title, @RequestParam String content, HttpServletRequest request, HttpServletResponse response) {
+    public String updateNote(@RequestParam(required = false) MultipartFile[] file, @RequestParam String title, @RequestParam String content, HttpServletRequest request, HttpServletResponse response) {
 
         JsonObject jsonObject = new JsonObject();
 
@@ -262,7 +260,7 @@ public class NoteController {
         String header = request.getHeader("Authorization");
         if (header != null) {
 
-            int userID = GetUserDetails(header);
+            int userID = helper.getUserID(header);
 
             if (userID > -1) {
                 Optional<Note> t = noteRepository.findById(noteID);
@@ -272,23 +270,20 @@ public class NoteController {
 
                         note.setTitle(title);
                         note.setContent(content);
-                        Date now = new Date();
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        String hehe = dateFormat.format(now);
-                        note.setLast_updated_on(hehe);
+                        note.setLast_updated_on(new Date().toString());
                         noteRepository.save(note);
 
                         List<FilePath> filePath = filePathRepository.findByNoteID(noteID);
-                        if(!filePath.isEmpty()) {
-                            for(FilePath f: filePath) {
+                        if (!filePath.isEmpty()) {
+                            for (FilePath f : filePath) {
                                 filePathService.delete(f.getFilename());
                                 filePathRepository.delete(f);
                             }
                         }
 
-                        if(file!=null) {
+                        if (file != null) {
 
-                            for(MultipartFile f:file) {
+                            for (MultipartFile f : file) {
                                 FilePath filePath1 = new FilePath();
                                 filePath1.setFilename(f.getOriginalFilename());
                                 filePath1.setNoteID(noteID);
@@ -323,15 +318,14 @@ public class NoteController {
     }
 
     @RequestMapping(value = "/note/{id}", method = RequestMethod.DELETE, produces = "application/json")
-    public @ResponseBody
-    String deleteNote(HttpServletRequest request, HttpServletResponse response) {
+    public String deleteNote(HttpServletRequest request, HttpServletResponse response) {
 
         JsonObject jsonObject = new JsonObject();
         String noteID = request.getRequestURI().split("/")[2];
         String header = request.getHeader("Authorization");
         if (header != null) {
 
-            int userID = GetUserDetails(header);
+            int userID = helper.getUserID(header);
 
             if (userID > -1) {
                 Optional<Note> t = noteRepository.findById(noteID);
@@ -340,8 +334,8 @@ public class NoteController {
                     if (note.getUserID() == userID) {
 
                         List<FilePath> filePath = filePathRepository.findByNoteID(noteID);
-                        if(!filePath.isEmpty()) {
-                            for(FilePath f: filePath) {
+                        if (!filePath.isEmpty()) {
+                            for (FilePath f : filePath) {
                                 filePathService.delete(f.getFilename());
                                 filePathRepository.delete(f);
                             }
@@ -374,36 +368,5 @@ public class NoteController {
         return jsonObject.toString();
 
     }
-
-    public int GetUserDetails(String header) {
-        //This is the logic to fetch user password from the authorization header value by removing "Basic" keyword, decoding and splitting with :
-
-        if (header != null && header.contains("Basic")) {
-            String basicAuthEncoded = header.substring(6);
-            String basicAuthAsString = new String(Base64.getDecoder().decode(basicAuthEncoded.getBytes()));
-
-
-            final String[] credentialValues = basicAuthAsString.split(":", 2);
-            //If user exists in DB , return the user object.
-            User user = validateUser(credentialValues[0], credentialValues[1]);
-            if (user != null) {
-                return user.getID();
-            }
-        }
-
-        return -1;
-
-    }
-
-
-    public User validateUser(String username, String password) {
-        for (User user : userRepository.findAll()) {
-            if ((user.getName().equals(username)) && BCrypt.checkpw(password, user.getpassword()))
-                return user;
-
-        }
-        return null;
-    }
-
 
 }

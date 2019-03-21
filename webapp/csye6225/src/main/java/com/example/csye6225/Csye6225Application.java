@@ -11,4 +11,3 @@ public class Csye6225Application {
     }
 
 }
-

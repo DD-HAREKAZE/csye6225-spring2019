@@ -1,7 +1,14 @@
 package com.example.csye6225.test;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Paths;
+
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
@@ -9,16 +16,13 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-
-import java.io.File;
-import java.net.URL;
 
 public class uploadAMZ {
 
     static AmazonS3 s3;
-    //this access belongs to JiaweiZhao: AK...CA, 2BW...und
-    static String AWS_ACCESS_KEY = "AKIAJHTZDCYX667REKCA";
+    static String AWS_ACCESS_KEY = "AKIAI2KUSZUVMVONE3YQ";
     static String AWS_SECRET_KEY = "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";
 
     String bucketName = "cf-templates-eojwssbxp6cn-us-east-1";

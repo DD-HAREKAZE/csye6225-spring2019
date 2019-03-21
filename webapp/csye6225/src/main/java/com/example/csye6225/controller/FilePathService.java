@@ -4,7 +4,7 @@ package com.example.csye6225.controller;
 
 import java.io.IOException;
 
-import com.example.csye6225.FilePath;
+import com.example.csye6225.dao.FilePathRepository;
 import com.example.csye6225.test.uploadAMZ;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
