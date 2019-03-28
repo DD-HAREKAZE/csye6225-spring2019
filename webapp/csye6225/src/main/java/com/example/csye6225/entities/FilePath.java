@@ -12,8 +12,8 @@ import javax.persistence.Id;
 public class FilePath {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+//    @GeneratedValue(generator = "UUID")
+//    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String ID;
 
     private String path;

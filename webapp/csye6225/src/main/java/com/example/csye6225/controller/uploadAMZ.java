@@ -1,4 +1,4 @@
-package com.example.csye6225.test;
+package com.example.csye6225.controller;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -22,10 +22,10 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 public class uploadAMZ {
 
     static AmazonS3 s3;
-    static String AWS_ACCESS_KEY = "AKIAI2KUSZUVMVONE3YQ";
-    static String AWS_SECRET_KEY = "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";
+    static String AWS_ACCESS_KEY = "AKIAI3WVWK7B5BDIVL7A";
+    static String AWS_SECRET_KEY = "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";
 
-    String bucketName = "cf-templates-eojwssbxp6cn-us-east-1";
+    String bucketName = "csye6225-spring2019-yuanke.me.csye6225.com";
 
     static {
         s3 = new AmazonS3Client(new BasicAWSCredentials(AWS_ACCESS_KEY, AWS_SECRET_KEY));
