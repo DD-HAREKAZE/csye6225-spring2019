@@ -14,22 +14,25 @@ public class NoteDao {
 	@Autowired
 	NoteRepository noterepo;
 
+	// TableCreation tableCreation;
+
+	// Save a Note
 
 	public Note Save(Note nt) {
 		return noterepo.save(nt);
 	}
 
-	
+	// get a all note
 	public List<Note> findAll() {
 		return noterepo.findAll();
 	}
 
-
+	// get a note by ID
 	public Optional<Note> noteById(String noteid) {
 		return noterepo.findById(noteid);
 	}
 
-	
+	// delete a note by Id
 	public void deleteNote(String noteid) {
 		noterepo.deleteById(noteid);
 	}

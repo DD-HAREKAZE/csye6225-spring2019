@@ -1,7 +1,7 @@
 
 aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE||CREATE_IN_PROGRESS||REVIEW_IN_PROGRESS||DELETE_IN_PROGRESS||DELETE_FAILED||UPDATE_IN_PROGRESS||DELETE_COMPLETE
 
-echo "Enter the stack name you would wish to create..."
+echo "Enter the stack you want to create"
 read Stack_Name
 
 
@@ -12,7 +12,7 @@ echo -e "\n"
 echo "Choose 1 Key which you want to use!"
 read KEY_CHOSEN
 
-echo "Displaying the AMI!"
+echo "Displaying AMI!"
 aws ec2 describe-images --owners self --query 'Images[*].{ID:ImageId}'
 echo -e "\n"
 echo "Enter AMI ID"
@@ -37,7 +37,9 @@ waitForState() {
 	while [[ "$status" != "$2" ]]; do
 
 		echo "Waiting for stack $1 to obtain status $2 - Current status: $status"
-		
+		# If the status is not one of the "_IN_PROGRESS" status' then consider
+
+		# this an error
 		if [[ "$status" != *"_IN_PROGRESS"* ]]; then
 			exitWithErrorMessage "Unexpected status '$status'"
 		fi
@@ -56,11 +58,18 @@ exitWithErrorMessage() {
 	echo "ERROR: $1"
 	exit 1
 }
+#-------------------------------------------------------------------------------
+# Returns a file URL for the given path
+#
+# Args:
+# $1  Path
+#-------------------------------------------------------------------------------
 
 dir_var=$(pwd)
-
+# echo "Current Directory is '$dir_var'"
 file_dir_var="file://$dir_var/application.json"
 
+#Create Stack
 
 aws cloudformation create-stack \
 	--stack-name $Stack_Name  \
@@ -76,5 +85,5 @@ if ! [ "$?" = "0" ]; then
 
 fi
 
-
+#Wait for completion
 waitForState ${Stack_Name} "CREATE_COMPLETE"
