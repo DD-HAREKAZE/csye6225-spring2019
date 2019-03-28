@@ -1,7 +1,7 @@
-package com.example.csye6225.controller;
+package com.example.csye6225.dao;
 
 
-import com.example.csye6225.Note;
+import com.example.csye6225.entities.Note;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
