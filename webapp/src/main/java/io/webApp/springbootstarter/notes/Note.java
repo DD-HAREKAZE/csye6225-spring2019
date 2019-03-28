@@ -1,10 +1,8 @@
 package io.webApp.springbootstarter.notes;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -130,6 +128,33 @@ public class Note {
 	}
 	
 
-
+//	public String getattachments() {
+//		
+//		createAttachmentString();
+//		return attachments;
+//	}
+//
+//	public void setattachments(String attachments)
+//	{
+//		createAttachmentString();
+//	}
+//	
+//	public String createAttachmentString() {
+//		attachmentDao aDao = new attachmentDao();
+//		System.out.println("ID : "+ getId());
+//		List<attachment> attachmentList = new ArrayList<attachment>(aDao.findBynoteID(getId()));
+//		if (attachmentList != null) {
+//
+//			StringBuilder sb = new StringBuilder();
+//			for (attachment i : attachmentList) {
+//				sb.append(i.toString());
+//				sb.append("\n");
+//			}
+//			attachments = sb.toString();
+//			return attachments;
+//		}
+//		attachments = "[\"id\":\"\", \"url\":\"\"]";
+//		return attachments;
+//	}
 
 }
