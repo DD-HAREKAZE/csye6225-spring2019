@@ -2,10 +2,11 @@
 package com.example.csye6225.controller;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import com.example.csye6225.dao.FilePathRepository;
-import com.example.csye6225.test.uploadAMZ;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ClassUtils;
@@ -20,13 +21,13 @@ public class FilePathService {
     private FilePathRepository filePathRepository;
     uploadAMZ A = new uploadAMZ();
 
-    public String Upload(@RequestParam("file") MultipartFile file){
+
+    public String Upload(@RequestParam("file") MultipartFile file, String fileName){
         if (!file.isEmpty()) {
-            String fileName = file.getOriginalFilename();
             String path = ClassUtils.getDefaultClassLoader().getResource("").getPath() + "static/";
             String uploadpath = ClassUtils.getDefaultClassLoader().getResource("").getPath() + "static/" + fileName;
             try {
-                FileUtil.fileupload(file.getBytes(), path, fileName);
+                fileupload(file.getBytes(), path, fileName);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -49,7 +50,7 @@ public class FilePathService {
             String path = ClassUtils.getDefaultClassLoader().getResource("").getPath() + "static/";
             String uploadpath = ClassUtils.getDefaultClassLoader().getResource("").getPath() + "static/" + fileName;
             try {
-                FileUtil.fileupload(file.getBytes(), path, fileName);
+                fileupload(file.getBytes(), path, fileName);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -57,6 +58,19 @@ public class FilePathService {
             return U;
         }
         return "success";
+    }
+
+    public static void fileupload(byte[] file,String filePath,String fileName) throws IOException {
+        File targetfile = new File(filePath);
+        if(targetfile.exists()) {
+            targetfile.mkdirs();
+        }
+
+        FileOutputStream out = new FileOutputStream(filePath+fileName);
+        out.write(file);
+        System.out.println("input successfully!");
+        out.flush();
+        out.close();
     }
 }
 

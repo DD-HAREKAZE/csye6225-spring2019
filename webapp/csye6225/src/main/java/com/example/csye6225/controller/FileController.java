@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 public class FileController {
@@ -126,8 +127,10 @@ public class FileController {
                             FilePath filePath = new FilePath();
                             filePath.setNoteID(noteID);
                             filePath.setFilename(f.getOriginalFilename());
-                            filePath.setPath(filePathService.Upload(f));
+                            filePath.setID(UUID.randomUUID().toString());
+                            filePath.setPath(filePathService.Upload(f,filePath.getID()));
                             filePathRepository.save(filePath);
+
                             JsonObject j = new JsonObject();
                             j.addProperty("id", filePath.getID());
                             j.addProperty("url", filePath.getPath());
@@ -184,9 +187,8 @@ public class FileController {
                         if (filePath != null) {
                             if (filePath.getNoteID().equals(noteID)) {
 
-                                filePathService.delete(filePath.getFilename());
                                 filePath.setFilename(file.getOriginalFilename());
-                                filePath.setPath(filePathService.Upload(file));
+                                filePath.setPath(filePathService.Upload(file,filePath.getID()));
                                 filePathRepository.save(filePath);
 
                                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
@@ -200,16 +202,6 @@ public class FileController {
                             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                             jsonObject.addProperty("message", "404:Not Found");
                         }
-
-
-                        FilePath filePathPut = new FilePath();
-                        filePathPut.setNoteID(noteID);
-                        filePathPut.setFilename(file.getOriginalFilename());
-                        filePathPut.setPath(filePathService.Upload(file));
-                        filePathRepository.save(filePathPut);
-
-                        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-                        return jsonObject.toString();
 
                     } else {
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -258,8 +250,7 @@ public class FileController {
                         if (filePath != null) {
                             if (filePath.getNoteID().equals(noteID)) {
 
-                                System.out.println(filePath.getFilename());
-                                filePathService.delete(filePath.getFilename());
+                                filePathService.delete(filePath.getID());
                                 filePathRepository.delete(filePath);
 
                                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);

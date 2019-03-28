@@ -14,6 +14,6 @@ public class MyGenerator implements IdentifierGenerator {
     @Override
     public Serializable generate(SharedSessionContractImplementor sharedSessionContractImplementor, Object object) throws HibernateException {
         return UUID.randomUUID().toString();
-        
+        // or any other logic you'd like for generating unique IDs
     }
 }

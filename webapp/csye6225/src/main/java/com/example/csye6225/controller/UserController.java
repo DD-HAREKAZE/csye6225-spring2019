@@ -79,7 +79,7 @@ public class UserController {
 
     // register function
     @RequestMapping(value = "/user/register", method = RequestMethod.POST, produces = "application/json")
-    public String RegisterNewUser(HttpServletRequest request, HttpServletResponse response) throws JSONException {
+    public String RegisterNewUser(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) throws JSONException {
 
         String result = " ";
         JSONObject jsonObject = new JSONObject();
@@ -90,13 +90,8 @@ public class UserController {
         //2 means username is not a email address
         //3 means password is not strong enough
 
-        String header = request.getHeader("Authorization");
-        String basicAuthEncoded = header.substring(6);
-        String basicAuthAsString = new String(Base64.getDecoder().decode(basicAuthEncoded.getBytes()));
-        final String[] credentialValues = basicAuthAsString.split(":", 2);
-
-        String username = credentialValues[0];
-        String password = credentialValues[1];
+        String username = user.getName();
+        String realpassword = user.getpassword();
 
 
         //username=email? check
@@ -108,7 +103,7 @@ public class UserController {
         }
 
         //password strong? check
-        if (password.length() <= 8) {
+        if (realpassword.length() <= 8) {
             jsonObject.put("Error message:", "Password length should be over 8.");
             jsonObject.put("Status:", "500");
             String p = jsonObject.toString();
@@ -116,7 +111,7 @@ public class UserController {
         }
         String reg = "[A-Z]";
         Pattern pattern = Pattern.compile(reg);
-        Matcher matcher = pattern.matcher(password);
+        Matcher matcher = pattern.matcher(realpassword);
         int j = 0;
         while (matcher.find()) {
             j++;
@@ -130,7 +125,7 @@ public class UserController {
 
         String reg2 = "[a-z]";
         Pattern pattern1 = Pattern.compile(reg2);
-        Matcher matcher1 = pattern1.matcher(password);
+        Matcher matcher1 = pattern1.matcher(realpassword);
         int k = 0;
         while (matcher1.find()) {
             k++;
@@ -144,7 +139,7 @@ public class UserController {
 
         String reg3 = "[0-9]";
         Pattern pattern2 = Pattern.compile(reg3);
-        Matcher matcher2 = pattern2.matcher(password);
+        Matcher matcher2 = pattern2.matcher(realpassword);
         int l = 0;
         while (matcher2.find()) {
             l++;
@@ -168,15 +163,15 @@ public class UserController {
             return p;
         }
         if (code == 0) {
-            User temp = new User();
-            temp.setName(username);
-            String codepass = BCrypt.hashpw(password, BCrypt.gensalt());
-            temp.setPassword(codepass);
-            temp.setRealpassword(password);
-            userRepository.save(temp);
+
+            String password = BCrypt.hashpw(realpassword, BCrypt.gensalt());
+            user.setRealpassword(realpassword);
+            user.setPassword(password);
+
+            userRepository.save(user);
             jsonObject.put("Message:", "Register success!");
-            jsonObject.put("Your username:", temp.getName());
-            jsonObject.put("Your password:", temp.getRealpassword());
+            jsonObject.put("Your username:", user.getName());
+            jsonObject.put("Your password:", user.getRealpassword());
             jsonObject.put("Status:", "200");
             result = jsonObject.toString();
 
