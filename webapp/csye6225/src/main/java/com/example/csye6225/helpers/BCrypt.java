@@ -1,4 +1,4 @@
-package com.example.csye6225.controller;
+package com.example.csye6225.helpers;
 // Copyright (c) 2006 Damien Miller <djm@mindrot.org>
 //
 // Permission to use, copy, modify, and distribute this software for any

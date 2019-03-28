@@ -1,5 +1,5 @@
 
-package com.example.csye6225;
+package com.example.csye6225.entities;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -12,8 +12,8 @@ import javax.persistence.Id;
 public class FilePath {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+//    @GeneratedValue(generator = "UUID")
+//    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String ID;
 
     private String path;

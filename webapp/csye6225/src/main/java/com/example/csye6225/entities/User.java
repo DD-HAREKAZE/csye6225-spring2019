@@ -1,4 +1,4 @@
-package com.example.csye6225;
+package com.example.csye6225.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
