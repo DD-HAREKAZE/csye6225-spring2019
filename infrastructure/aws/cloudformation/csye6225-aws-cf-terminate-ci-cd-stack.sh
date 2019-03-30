@@ -1,3 +1,6 @@
+
+
+#listing all the stacks
 aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE||CREATE_IN_PROGRESS||REVIEW_IN_PROGRESS||DELETE_IN_PROGRESS||DELETE_FAILED||UPDATE_IN_PROGRESS||DELETE_COMPLETE
 
 echo "Enter the stack you want to delete"
