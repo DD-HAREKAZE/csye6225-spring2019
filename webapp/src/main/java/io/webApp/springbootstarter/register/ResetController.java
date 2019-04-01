@@ -1,7 +1,5 @@
 package com.example.csye6225.controller;
 
-import com.example.csye6225.dao.UserRepository;
-import com.example.csye6225.entities.User;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,41 +28,52 @@ public class ResetController {
     public String reset(@RequestBody String email, HttpServletRequest request, HttpServletResponse response) throws IOException {
         JsonObject jsonObject = new JsonObject();
 
-        try{
-            Optional<User> u = userRepository.findById(email);
-            User user = u.isPresent() ? u.get() : null;
-        }catch (Exception e){
+        register user = userRepository.findByEmail(email)
 
+//        try{
+//            register user = userRepository.findByEmail(email);
+//
+//        }catch (Exception e){
+//
+//            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//            jsonObject.addProperty("Message", "user does not exist");
+//            jsonObject.addProperty("Code Status", response.getStatus());
+//            return jsonObject.toString();
+//        }
+
+        if(user == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             jsonObject.addProperty("Message", "user does not exist");
             jsonObject.addProperty("Code Status", response.getStatus());
-            return jsonObject.toString();
-        }
-        String msg;
-        String topicArn;
-        try{
-            AmazonSNSClient snsClient = new AmazonSNSClient();
-            snsClient.setRegion(Region.getRegion(Regions.US_EAST_1));
 
-            CreateTopicRequest createTopicRequest = new CreateTopicRequest("reset");
-            CreateTopicResult createTopicResult = snsClient.createTopic(createTopicRequest);
-            topicArn = createTopicResult.getTopicArn();
+        }else {
+            String msg;
+            String topicArn;
+            try{
+                AmazonSNSClient snsClient = new AmazonSNSClient();
+                snsClient.setRegion(Region.getRegion(Regions.US_EAST_1));
 
-            msg = email;
-            PublishRequest publishRequest = new PublishRequest(topicArn, msg);
-            PublishResult publishResult = snsClient.publish(publishRequest);
+                CreateTopicRequest createTopicRequest = new CreateTopicRequest("reset");
+                CreateTopicResult createTopicResult = snsClient.createTopic(createTopicRequest);
+                topicArn = createTopicResult.getTopicArn();
 
-        }catch (Exception e){
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                msg = email;
+                PublishRequest publishRequest = new PublishRequest(topicArn, msg);
+                PublishResult publishResult = snsClient.publish(publishRequest);
+
+            }catch (Exception e){
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                jsonObject.addProperty("Code Status", response.getStatus());
+                jsonObject.addProperty("message", e.getMessage());
+                return jsonObject.toString();
+            }
+            response.setStatus(HttpServletResponse.SC_CREATED);
             jsonObject.addProperty("Code Status", response.getStatus());
-            jsonObject.addProperty("message", e.getMessage());
-            return jsonObject.toString();
+            jsonObject.addProperty("Status","topic pulish successfully!");
+            jsonObject.addProperty("topic ARN", topicArn);
+            jsonObject.addProperty("Request password user",msg);
         }
-        response.setStatus(HttpServletResponse.SC_CREATED);
-        jsonObject.addProperty("Code Status", response.getStatus());
-        jsonObject.addProperty("Status","topic pulish successfully!");
-        jsonObject.addProperty("topic ARN", topicArn);
-        jsonObject.addProperty("Request password user",msg);
+
 
         return jsonObject.toString();
     }
