@@ -121,7 +121,7 @@ public class registerController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/note")
+	@RequestMapping(method = RequestMethod.POST, value = "/notezhaojiawei")
 	public ResponseEntity<Note> createNote(@RequestBody Note nt,
 			@RequestHeader(value = "Authorization", defaultValue = "noAuth") String auth) {
 		statsd.incrementCounter(noteHTTPPOST);
