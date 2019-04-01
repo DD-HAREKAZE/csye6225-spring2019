@@ -38,7 +38,7 @@ jobs:
             cd codedeploy_artifact
             cp ../infrastructure/aws/codedeploy/*.sh .
             cp ../*.yml .
-            cp ../webapp/*.json .
+            cp ../*.json .
             cp ../webapp/target/webApp-0.0.1-SNAPSHOT.jar .
             cp ../webapp/src/main/resources/*.properties .
             zip -r csye6225-web-app-${CIRCLE_BUILD_NUM}.zip .
