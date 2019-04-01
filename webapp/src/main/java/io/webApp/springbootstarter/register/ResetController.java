@@ -1,4 +1,4 @@
-package com.example.csye6225.controller;
+package io.webApp.springbootstarter.register;
 
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
