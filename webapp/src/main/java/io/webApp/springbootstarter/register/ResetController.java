@@ -1,4 +1,4 @@
-package com.example.csye6225.controller;
+package io.webApp.springbootstarter.register;
 
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class ResetController {
     public String reset(@RequestBody String email, HttpServletRequest request, HttpServletResponse response) throws IOException {
         JsonObject jsonObject = new JsonObject();
 
-        register user = userRepository.findByEmail(email)
+        register user = userRepository.findByEmail(email);
 
 //        try{
 //            register user = userRepository.findByEmail(email);
