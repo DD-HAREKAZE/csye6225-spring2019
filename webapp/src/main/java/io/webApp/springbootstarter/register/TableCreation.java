@@ -19,7 +19,7 @@ public class TableCreation {
 		Query query = entityManager.createNativeQuery("Create Database if not exists user_details"
 				+ "CREATE TABLE if not exists loginDetails (\n" + 
 				"  id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,\n" + 
-				"    email VARCHAR(5000) NOT NULL\n" + 
+				"    email VARCHAR(5000) NOT NULL \n" +
 				"   password VARCHAR(500) NOT NULL,\n" + 
 				"); ");
 		return true;
