@@ -28,7 +28,7 @@ public class ResetController {
     public String reset(@RequestBody String email, HttpServletRequest request, HttpServletResponse response) throws IOException {
         JsonObject jsonObject = new JsonObject();
 
-        register user = userRepository.findByEmail(email)
+        register user = userRepository.findByEmail(email);
 
 //        try{
 //            register user = userRepository.findByEmail(email);
