@@ -24,8 +24,8 @@ public class ResetController {
     @Autowired
     private UserRepository userRepository;
     
-    @Value("${ARN}")
-    private String topicArn;
+//    @Value("${ARN}")
+    private String topicArn = System.getenv("ARN");
 
     @RequestMapping(value = "/reset", method = RequestMethod.POST, produces = "application/json")
     public String reset(@RequestBody String email, HttpServletRequest request, HttpServletResponse response) throws IOException {
