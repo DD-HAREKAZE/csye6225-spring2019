@@ -67,7 +67,7 @@ public class ResetController {
             jsonObject.addProperty("Code Status", response.getStatus());
             jsonObject.addProperty("Status","topic pulish successfully!");
             jsonObject.addProperty("topic ARN", topicArn);
-            jsonObject.addProperty("Request password user",msg);
+            jsonObject.addProperty("Request password user",email);
         }
 
 
