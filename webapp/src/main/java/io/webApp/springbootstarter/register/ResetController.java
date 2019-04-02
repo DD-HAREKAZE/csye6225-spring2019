@@ -3,7 +3,7 @@ package io.webApp.springbootstarter.register;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.beans.factory.annotation.Value;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -24,8 +24,8 @@ public class ResetController {
     @Autowired
     private UserRepository userRepository;
     
-//    @Value("${ARN}")
-    private String topicArn = System.getenv("ARN");
+    @Value("${ARN}")
+    private String topicArn;
 
     @RequestMapping(value = "/reset", method = RequestMethod.POST, produces = "application/json")
     public String reset(@RequestBody String email, HttpServletRequest request, HttpServletResponse response) throws IOException {
