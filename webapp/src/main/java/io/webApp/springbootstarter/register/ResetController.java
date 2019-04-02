@@ -27,50 +27,36 @@ public class ResetController {
     @Value("${ARN}")
     private String topicArn;
 
-    @RequestMapping(value = "/reset", method = RequestMethod.POST, produces = "application/json")
-    public String reset(@RequestBody String email, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        JsonObject jsonObject = new JsonObject();
+   @RequestMapping(method = RequestMethod.POST, value = "/reset")
+	public String reserPassword(@RequestBody register userDetails) {
+		statsd.incrementCounter(userHTTPPOST);
 
-        register user = userRepository.findByEmail(email);
+		logger.info("POST request : \"/reset\"");
 
-//        try{
-//            register user = userRepository.findByEmail(email);
-//
-//        }catch (Exception e){
-//
-//            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//            jsonObject.addProperty("Message", "user does not exist");
-//            jsonObject.addProperty("Code Status", response.getStatus());
-//            return jsonObject.toString();
-//        }
+		if (userDetails.getEmail() == null) {
+			logger.error("Credentials should not be empty");
+			return "{\"RESPONSE\" : \"User email not provided\"}";
+		}
 
-        if(user == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            jsonObject.addProperty("Message", "user does not exist");
-            jsonObject.addProperty("Code Status", response.getStatus());
+		logger.debug("Reset password for Email id : " + userDetails.getEmail());
 
-        }else {
-            try{
-                AmazonSNSClient snsClient = new AmazonSNSClient();
-                snsClient.setRegion(Region.getRegion(Regions.US_EAST_1));
+		if (checkVaildEmailAddr(userDetails.getEmail())) {
+			if (!checkAlreadyPresent(userDetails)) {
+				logger.debug("This user is not registered with us");
+				return "{\"RESPONSE\" : \"User not registered ! Please register\"}";
+			}
+		}
 
-                PublishRequest publishRequest = new PublishRequest(topicArn, email);
-		        PublishResult publishResult = snsClient.publish(publishRequest);
+		AmazonSNS snsClient = AmazonSNSClient.builder().withRegion("us-east-1")
+				.withCredentials(new InstanceProfileCredentialsProvider(false)).build();
 
-            }catch (Exception e){
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                jsonObject.addProperty("Code Status", response.getStatus());
-                jsonObject.addProperty("message", e.getMessage());
-                return jsonObject.toString();
-            }
-            response.setStatus(HttpServletResponse.SC_CREATED);
-            jsonObject.addProperty("Code Status", response.getStatus());
-            jsonObject.addProperty("Status","topic pulish successfully!");
-            jsonObject.addProperty("topic ARN", topicArn);
-            jsonObject.addProperty("Request password user",email);
-        }
+		String resetEmail = userDetails.getEmail();
+		logger.info("Reset Email: " + resetEmail);
 
+		PublishRequest publishRequest = new PublishRequest(topicArn, userDetails.getEmail());
+		PublishResult publishResult = snsClient.publish(publishRequest);
+		logger.info("SNS Publish Result: " + publishResult);
 
-        return jsonObject.toString();
-    }
+		return "{\"RESPONSE\" : \"Password Reset Link was sent to your emailID\"}";
+	}
 }
