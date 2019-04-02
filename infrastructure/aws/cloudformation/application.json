@@ -109,7 +109,7 @@
                                                 "Ref": "Accountno"
 
                                             },
-                                            ":password_reset >> /etc/profile.d/envvariable.sh \n"
+                                            ":Sentemail >> /etc/profile.d/envvariable.sh \n"
                                         ]
                                     ]
                                 },
