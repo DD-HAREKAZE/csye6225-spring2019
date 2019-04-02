@@ -23,6 +23,9 @@ public class ResetController {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Value("${ARN}")
+	private String topicArn;
 
     @RequestMapping(value = "/reset", method = RequestMethod.POST, produces = "application/json")
     public String reset(@RequestBody String email, HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -47,19 +50,12 @@ public class ResetController {
             jsonObject.addProperty("Code Status", response.getStatus());
 
         }else {
-            String msg;
-            String topicArn;
             try{
                 AmazonSNSClient snsClient = new AmazonSNSClient();
                 snsClient.setRegion(Region.getRegion(Regions.US_EAST_1));
 
-                CreateTopicRequest createTopicRequest = new CreateTopicRequest("reset");
-                CreateTopicResult createTopicResult = snsClient.createTopic(createTopicRequest);
-                topicArn = createTopicResult.getTopicArn();
-
-                msg = email;
-                PublishRequest publishRequest = new PublishRequest(topicArn, msg);
-                PublishResult publishResult = snsClient.publish(publishRequest);
+                PublishRequest publishRequest = new PublishRequest(topicArn, email);
+		        PublishResult publishResult = snsClient.publish(publishRequest);
 
             }catch (Exception e){
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
