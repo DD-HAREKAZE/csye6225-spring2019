@@ -10,8 +10,6 @@ import javax.persistence.Id;
 
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int ID;
     private String name;
     private String password;
     private String realpassword;
@@ -22,14 +20,8 @@ public class User {
         return name;
     }
     public String getpassword() { return password; }
-    public int getID() {
-        return ID;
-    }
     public void setName(String name) {
         this.name = name;
-    }
-    public void setID(int ID) {
-        this.ID = ID;
     }
     public void setPassword(String password) {
         this.password = password;
