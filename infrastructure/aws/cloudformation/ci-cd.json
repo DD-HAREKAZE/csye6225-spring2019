@@ -148,13 +148,6 @@
 
         },
 
-        "s3Bucketcodedeploy" : {
-            "Type" : "AWS::S3::Bucket",
-            "Properties" : {
-                "BucketName" :{"Ref":"deploybucket"}
-            }
-        },
-
         "CodeDeployEC2ServiceRole":{
             "Type":"AWS::IAM::Role",
             "Properties":{
