@@ -487,7 +487,7 @@ public class registerController {
 		String resetEmail = userDetails.getEmail();
 		logger.info("Reset Email: " + resetEmail);
 
-		PublishRequest publishRequest = new PublishRequest("arn:aws:sns:us-east-1:093148784906:csye6225reset", userDetails.getEmail());
+		PublishRequest publishRequest = new PublishRequest(topicArn, userDetails.getEmail());
 		PublishResult publishResult = snsClient.publish(publishRequest);
 		logger.info("SNS Publish Result: " + publishResult);
 
