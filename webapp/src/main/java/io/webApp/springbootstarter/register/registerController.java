@@ -461,7 +461,7 @@ public class registerController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/resett")
+	@RequestMapping(method = RequestMethod.POST, value = "/reset")
 	public String reserPassword(@RequestBody register userDetails) {
 		statsd.incrementCounter(userHTTPPOST);
 
