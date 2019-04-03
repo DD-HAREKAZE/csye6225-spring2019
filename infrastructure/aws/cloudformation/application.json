@@ -109,7 +109,7 @@
                                                 "Ref": "Accountno"
 
                                             },
-                                            ":Sentemail >> /etc/profile.d/envvariable.sh \n"
+                                            ":csye6225reset >> /etc/profile.d/envvariable.sh \n"
                                         ]
                                     ]
                                 },
