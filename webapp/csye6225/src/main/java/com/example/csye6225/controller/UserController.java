@@ -39,13 +39,13 @@ public class UserController {
         User user = u.isPresent() ? u.get() : null;
 
         if (user != null) {
-            if(BCrypt.checkpw(password,user.getpassword())) {
+            if (BCrypt.checkpw(password, user.getpassword())) {
                 //output current time
                 jsonObject.addProperty("User: ", username);
                 jsonObject.addProperty("Current time: ", new Date().toString());
                 jsonObject.addProperty("Status: ", "200");
                 response.setStatus(HttpServletResponse.SC_OK);
-            }else {
+            } else {
                 jsonObject.addProperty("Error: ", "password is not right");
                 jsonObject.addProperty("Status:", "400");
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
