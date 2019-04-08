@@ -3,13 +3,13 @@ package com.example.csye6225.controller;
 import com.example.csye6225.entities.User;
 import com.example.csye6225.dao.UserRepository;
 import com.example.csye6225.helpers.BCrypt;
+import com.example.csye6225.helpers.Helper;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -20,6 +20,8 @@ import java.util.regex.Pattern;
 public class UserController {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private Helper helper;
 
     // assignment1 GET method:/ return current time
     //redo: add basic auth
@@ -28,35 +30,24 @@ public class UserController {
 
         JsonObject jsonObject = new JsonObject();
         String header = request.getHeader("Authorization");
-        String basicAuthEncoded = header.substring(6);
-        String basicAuthAsString = new String(Base64.getDecoder().decode(basicAuthEncoded.getBytes()));
-        final String[] credentialValues = basicAuthAsString.split(":", 2);
 
-        String username = credentialValues[0];
-        String password = credentialValues[1];
+        String code = helper.validateUser(header);
 
-        Optional<User> u = userRepository.findById(username);
-        User user = u.isPresent() ? u.get() : null;
-
-        if (user != null) {
-            if (BCrypt.checkpw(password, user.getpassword())) {
-                //output current time
-                jsonObject.addProperty("User: ", username);
-                jsonObject.addProperty("Current time: ", new Date().toString());
-                jsonObject.addProperty("Status: ", "200");
-                response.setStatus(HttpServletResponse.SC_OK);
-            } else {
-                jsonObject.addProperty("Error: ", "password is not right");
-                jsonObject.addProperty("Status:", "400");
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            }
-
-        } else {
-            jsonObject.addProperty("Error: ", "You have not registered.");
+        if (code.equals("0")) {
+            jsonObject.addProperty("Error: ", "Password is not right");
             jsonObject.addProperty("Status:", "400");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        } else if (code.equals("-1")) {
+            jsonObject.addProperty("Error: ", "You have not registered");
+            jsonObject.addProperty("Status:", "400");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        } else {
+            //output current time
+            jsonObject.addProperty("username",code);
+            jsonObject.addProperty("Current time: ", new Date().toString());
+            jsonObject.addProperty("Status: ", "200");
+            response.setStatus(HttpServletResponse.SC_OK);
         }
-
 
         return jsonObject.toString();
     }

@@ -1,8 +1,11 @@
 package com.example.csye6225.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+//import org.springframework.data.annotation.Id;
 @Entity
 
 public class User {
