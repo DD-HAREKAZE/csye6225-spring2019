@@ -30,24 +30,27 @@ public class UserController {
 
         JsonObject jsonObject = new JsonObject();
         String header = request.getHeader("Authorization");
-
-        String code = helper.validateUser(header);
-
-        if (code.equals("0")) {
-            jsonObject.addProperty("Error: ", "Password is not right");
-            jsonObject.addProperty("Status:", "400");
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        } else if (code.equals("-1")) {
-            jsonObject.addProperty("Error: ", "You have not registered");
-            jsonObject.addProperty("Status:", "400");
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        if (header != null) {
+            String code = helper.validateUser(header);
+            if (code.equals("0")) {
+                jsonObject.addProperty("Error: ", "Password is not right");
+                jsonObject.addProperty("Status:", "400");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            } else if (code.equals("-1")) {
+                jsonObject.addProperty("Error: ", "You have not registered");
+                jsonObject.addProperty("Status:", "400");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            } else {
+                //output current time
+                jsonObject.addProperty("username", code);
+                jsonObject.addProperty("Current time: ", new Date().toString());
+                jsonObject.addProperty("Status: ", "200");
+                response.setStatus(HttpServletResponse.SC_OK);
+            }
         } else {
-            //output current time
-            jsonObject.addProperty("username",code);
-            jsonObject.addProperty("Current time: ", new Date().toString());
-            jsonObject.addProperty("Status: ", "200");
-            response.setStatus(HttpServletResponse.SC_OK);
+            jsonObject.addProperty("Error", "No Auth");
         }
+
 
         return jsonObject.toString();
     }
