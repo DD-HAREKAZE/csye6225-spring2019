@@ -16,7 +16,6 @@ jobs:
           command: |
             sudo pip install awscli
             aws configure set default.region us-east-1
-
       - run:
           name: Build Artifact
           command: |
@@ -39,10 +38,11 @@ jobs:
             cp ../infrastructure/aws/codedeploy/*.sh .
             cp ../cloudwatchconfig.json .
             cp ../*.yml .
+            cp ../*.json .
             cp ../webapp/target/webApp-0.0.1-SNAPSHOT.jar .
             cp ../webapp/src/main/resources/*.properties .
             zip -r csye6225-web-app-${CIRCLE_BUILD_NUM}.zip .
-            rm *.yml *.sh *.properties *.jar
+            rm *.yml *.sh *.properties *.jar *.json
             ls -al
             pwd
             cd ..

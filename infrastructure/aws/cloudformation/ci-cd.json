@@ -8,10 +8,10 @@
             "Type":"String"
         },
         "deploybucket":{
-          "Type":"String"
+            "Type":"String"
         },
         "attachmentbucket":{
-          "Type":"String"
+            "Type":"String"
         }
     },
     "Resources":{
@@ -67,7 +67,7 @@
             "Type":"AWS::IAM::ManagedPolicy",
             "Properties":{
                 "ManagedPolicyName" : "CodeDeploy-EC2-S3",
-		            "PolicyDocument":{
+                "PolicyDocument":{
                     "Version" : "2012-10-17",
                     "Statement":[{
                         "Action":[
@@ -77,7 +77,7 @@
                         "Effect":"Allow",
                         "Resource" : [{
                             "Fn::Join":["",["arn:aws:s3:::",{"Ref":"deploybucket"},"/*"]]
-                            }]
+                        }]
                     }
                     ]
                 }
@@ -119,25 +119,25 @@
                         "Effect":"Allow",
                         "Resource" : [{"Fn::Join": [ "", ["arn:aws:codedeploy:us-east-1:", {"Ref": "AccTag"},":application:csye6225-webapp"]]} ]
                     },
-                    {
-                        "Action":[
-                            "codedeploy:CreateDeployment",
-                            "codedeploy:GetDeployment"
-                        ],
-                        "Effect":"Allow",
-                        "Resource" : "*"
-                    },
-                    {
-                        "Action":[
-                            "codedeploy:GetDeploymentConfig"
-                        ],
-                        "Effect":"Allow",
-                        "Resource" : [
-                            {"Fn::Join": [ "", ["arn:aws:codedeploy:us-east-1:", {"Ref": "AccTag"},":deploymentconfig:CodeDeployDefault.OneAtATime"]]},
-                            {"Fn::Join": [ "", ["arn:aws:codedeploy:us-east-1:", {"Ref": "AccTag"},":deploymentconfig:CodeDeployDefault.HalfAtATime"]]},
-                            {"Fn::Join": [ "", ["arn:aws:codedeploy:us-east-1:", {"Ref": "AccTag"},":deploymentconfig:CodeDeployDefault.AllAtOnce"]]}
-                        ]
-                    }
+                        {
+                            "Action":[
+                                "codedeploy:CreateDeployment",
+                                "codedeploy:GetDeployment"
+                            ],
+                            "Effect":"Allow",
+                            "Resource" : "*"
+                        },
+                        {
+                            "Action":[
+                                "codedeploy:GetDeploymentConfig"
+                            ],
+                            "Effect":"Allow",
+                            "Resource" : [
+                                {"Fn::Join": [ "", ["arn:aws:codedeploy:us-east-1:", {"Ref": "AccTag"},":deploymentconfig:CodeDeployDefault.OneAtATime"]]},
+                                {"Fn::Join": [ "", ["arn:aws:codedeploy:us-east-1:", {"Ref": "AccTag"},":deploymentconfig:CodeDeployDefault.HalfAtATime"]]},
+                                {"Fn::Join": [ "", ["arn:aws:codedeploy:us-east-1:", {"Ref": "AccTag"},":deploymentconfig:CodeDeployDefault.AllAtOnce"]]}
+                            ]
+                        }
 
                     ]
                 }
@@ -145,18 +145,12 @@
 
         },
 
-        "s3Bucketcodedeploy" : {
-            "Type" : "AWS::S3::Bucket",
-            "Properties" : {
-                "BucketName" :{"Ref":"deploybucket"}
-            }
-        },
-
         "CodeDeployEC2ServiceRole":{
             "Type":"AWS::IAM::Role",
             "Properties":{
                 "RoleName":"CodeDeployEC2ServiceRole",
                 "ManagedPolicyArns":[
+
                {
                   "Ref":"CodeDeployEC2S3"
                },
@@ -166,14 +160,15 @@
                "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
                "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
             ],
+
                 "AssumeRolePolicyDocument":{
                     "Version" : "2012-10-17",
                     "Statement": [ {
-                    "Effect": "Allow",
-                    "Principal": {
-                    "Service": [ "ec2.amazonaws.com" ]
-                  },
-                    "Action": [ "sts:AssumeRole" ]
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": [ "ec2.amazonaws.com" ]
+                        },
+                        "Action": [ "sts:AssumeRole" ]
                     } ]
                 }
             }
@@ -186,16 +181,16 @@
                 "AssumeRolePolicyDocument":{
                     "Version" : "2012-10-17",
                     "Statement": [ {
-                    "Effect": "Allow",
-                    "Principal": {
-                    "Service": [ "codedeploy.amazonaws.com" ]
-                  },
-                    "Action": [ "sts:AssumeRole" ]
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": [ "codedeploy.amazonaws.com" ]
+                        },
+                        "Action": [ "sts:AssumeRole" ]
                     } ]
                 },
                 "ManagedPolicyArns":[
                     "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
-                    ]
+                ]
             }
         },
         "ec2instanceprofile":{
@@ -212,7 +207,7 @@
             "Properties":{
                 "ManagedPolicyName" : "Access-Attachment-To-S3-Bucket",
                 "Description":"Policy for uploading attachments into S3",
-		            "PolicyDocument":{
+                "PolicyDocument":{
                     "Version" : "2012-10-17",
                     "Statement":[{
                         "Action":[

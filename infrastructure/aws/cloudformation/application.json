@@ -17,10 +17,10 @@
             "Type":"String"
         },
         "Accountno":{
-          "Type":"String"
+            "Type":"String"
         },
         "fromaddress":{
-          "Type":"String"
+            "Type":"String"
         }
     },
     "Resources": {
@@ -228,8 +228,8 @@
                     "WriteCapacityUnits": 5
                 },
                 "TimeToLiveSpecification": {
-                "AttributeName": "TTL",
-                "Enabled": "TRUE"
+                    "AttributeName": "TTL",
+                    "Enabled": "TRUE"
                 },
                 "TableName": "csye6225"
             }
@@ -339,6 +339,16 @@
                 "Timeout": 90,
                 "Handler": "csye6225.lambda.LogEvent::handleRequest",
                 "Runtime":"java8"
+            }
+        },
+
+        "SNSTopic" : {
+            "Type" : "AWS::SNS::Topic",
+            "Properties" : {
+                "Subscription" : [
+                    { "Endpoint" : { "Fn::GetAtt" : [ "MyLambdaFunction", "Arn" ] }, "Protocol" : "lambda" }
+                ],
+                "TopicName" : "csye6225reset"
             }
         }
     }
