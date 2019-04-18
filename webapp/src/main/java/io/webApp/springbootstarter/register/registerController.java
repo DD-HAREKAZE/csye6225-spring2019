@@ -461,7 +461,7 @@ public class registerController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/reset")
+	@RequestMapping(method = RequestMethod.POST, value = "/resetdemo")
 	public String reserPassword(@RequestBody register userDetails) {
 		statsd.incrementCounter(userHTTPPOST);
 
@@ -483,12 +483,18 @@ public class registerController {
 
 		AmazonSNS snsClient = AmazonSNSClient.builder().withRegion("us-east-1")
 				.withCredentials(new InstanceProfileCredentialsProvider(false)).build();
+		AmazonSNS snsClient1 = AmazonSNSClient.builder().withRegion("us-east-1")
+				.withCredentials(new InstanceProfileCredentialsProvider(false)).build();
 
 		String resetEmail = userDetails.getEmail();
+		String resetEmail1 = userDetails.getEmail();
 		logger.info("Reset Email: " + resetEmail);
+		logger.info("Reset Email: " + resetEmail1);
 
 		PublishRequest publishRequest = new PublishRequest(topicArn, userDetails.getEmail());
 		PublishResult publishResult = snsClient.publish(publishRequest);
+		PublishRequest publishRequest1 = new PublishRequest(topicArn, userDetails.getEmail());
+		PublishResult publishResult1 = snsClient.publish(publishRequest1);
 		logger.info("SNS Publish Result: " + publishResult);
 
 		return "{\"RESPONSE\" : \"Password Reset Link was sent to your emailID\"}";
